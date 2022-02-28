@@ -11,7 +11,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import model.Users;
 
-public class ConnectionController implements Initializable {
+public class LoginController implements Initializable {
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -20,8 +20,8 @@ public class ConnectionController implements Initializable {
     private String username;
 
     @FXML
-    private void goBack() { // TODO
-        System.out.println("No previous page :(");
+    private void goBack() {
+        State.setScene("users");
     }
 
     @FXML

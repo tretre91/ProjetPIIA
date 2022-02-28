@@ -1,17 +1,16 @@
+import controller.State;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Users;
 
 public class Main extends Application {
-
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("view/login.fxml"));
+    public void start(Stage primaryStage) {
+        State.setStage(primaryStage);
         primaryStage.setTitle("Homework Folder Manager");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setHeight(600);
+        primaryStage.setWidth(800);
+        State.setScene("users");
         primaryStage.show();
     }
 
