@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ConnectionController">
+   <children>
+      <Button cancelButton="true" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@button.css" text="Button">
+         <graphic>
+            <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+               <image>
+                  <Image url="@assets/baseline_arrow_back_black_48dp.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+         <children>
+            <Text fx:id="header" strokeType="OUTSIDE" strokeWidth="0.0" text="Bienvenue &lt;username&gt; !" textAlignment="CENTER">
+               <font>
+                  <Font name="Lato Semibold" size="30.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="30.0" />
+               </VBox.margin>
+            </Text>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mot de passe">
+               <font>
+                  <Font name="Lato Regular" size="16.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
+            </Text>
+            <PasswordField fx:id="passwordField">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="50.0" right="50.0" top="5.0" />
+               </VBox.margin>
+            </PasswordField>
+            <Button defaultButton="true" mnemonicParsing="false" onAction="#connect" text="Ok">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Button>
+            <Text layoutX="310.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
+               <font>
+                  <Font name="Lato Semibold" size="30.0" />
+               </font>
+            </Text>
+         </children>
+      </VBox>
+   </children>
+</VBox>
