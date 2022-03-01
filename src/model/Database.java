@@ -20,7 +20,7 @@ public abstract class Database {
      * @return false si la connexion a échoué, true sinon
      */
     public static boolean open() {
-        return open("src/resources/data/database.db");
+        return open(Database.class.getResource("/resources/database.db").getPath());
     }
 
     /**

@@ -27,12 +27,13 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void connect() { // TODO
+    private void connect() {
         String password = passwordField.getText();
 
         try {
             if (Users.checkPassword(username, password)) {
                 System.out.println("Congrats, this is the right password");
+                // TODO : passage à la page d'acceuil
             } else {
                 System.out.println("Wrong password :(");
                 passwordField.setStyle("-fx-border-color: red");

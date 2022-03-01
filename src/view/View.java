@@ -37,7 +37,8 @@ public abstract class View {
             Parent root = FXMLLoader.load(fxml);
             scene.setRoot(root);
         } catch (IOException e) {
-            System.err.println("ERROR: no fxml file named " + page.getFilename());
+            System.err.printf("ERROR: failed to load fxml file '%s' (exception type: %s), error message:\n%s\n",
+                    page.getFilename(), e.getClass().getName(), e.getMessage());
         }
     }
 }
