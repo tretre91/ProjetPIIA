@@ -2,7 +2,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.Users;
+import model.Database;
 import view.Page;
 import view.View;
 
@@ -20,9 +20,9 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        if (Users.open("users.db")) {
+        if (Database.isValid() || Database.open()) {
             launch(args);
-            Users.close();
+            Database.close();
         } else {
             System.err.println("Echec de l'ouverture de la base de données");
         }

@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import model.User;
 import model.Users;
 
 public class UsersController implements Initializable {
@@ -32,13 +33,15 @@ public class UsersController implements Initializable {
         });
 
         try {
-            ArrayList<String> users = Users.getUsers();
+            ArrayList<User> users = Users.getUsers();
             ObservableList<Node> list = usersList.getChildren();
             URL userCard = getClass().getResource("/resources/fxml/userCard.fxml");
-            for (String username : users) {
-                UserCardController.setCurrentUser(username);
-                Button user = FXMLLoader.load(userCard);
-                list.add(user);
+
+            for (User user : users) {
+                UserCardController.setCurrentUser(user.getName());
+                UserCardController.setCurrentAvatar(user.getAvatar());
+                Button card = FXMLLoader.load(userCard);
+                list.add(card);
             }
         } catch (SQLException e) {
             // TODO
