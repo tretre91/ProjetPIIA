@@ -10,6 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
 import model.Users;
+import view.Page;
+import view.View;
 
 public class LoginController implements Initializable {
     @FXML
@@ -21,7 +23,7 @@ public class LoginController implements Initializable {
 
     @FXML
     private void goBack() {
-        State.setScene("users");
+        View.switchPage(Page.USER_SELECTION);
     }
 
     @FXML

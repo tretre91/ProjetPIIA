@@ -18,12 +18,12 @@ import model.Users;
 
 public class UsersController implements Initializable {
     @FXML
-    private HBox usersList;
-    @FXML
     private ScrollPane scrollPane;
+    @FXML
+    private HBox usersList;
 
     @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
+    public void initialize(URL url, ResourceBundle resources) {
         // permet de se déplacer horizontalement avec un scroll vertical
         usersList.setOnScroll((event) -> {
             if (event.getDeltaX() == 0 && event.getDeltaY() != 0) {
@@ -34,7 +34,7 @@ public class UsersController implements Initializable {
         try {
             ArrayList<String> users = Users.getUsers();
             ObservableList<Node> list = usersList.getChildren();
-            URL userCard = getClass().getResource("/view/userCard.fxml");
+            URL userCard = getClass().getResource("/resources/fxml/userCard.fxml");
             for (String username : users) {
                 UserCardController.setCurrentUser(username);
                 Button user = FXMLLoader.load(userCard);

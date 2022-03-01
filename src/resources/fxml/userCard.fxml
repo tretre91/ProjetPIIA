@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goToLogin" stylesheets="@userCard.css" text="Button" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserCardController">
+<Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goToLogin" stylesheets="@../css/userCard.css" text="Button" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserCardController">
    <graphic>
       <VBox alignment="CENTER">
          <children>

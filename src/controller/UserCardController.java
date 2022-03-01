@@ -8,6 +8,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import view.View;
+import view.Page;
 
 public class UserCardController implements Initializable {
     private static String currentUser = "";
@@ -30,7 +32,7 @@ public class UserCardController implements Initializable {
     @FXML
     private void goToLogin() {
         State.setCurrentUser(username.getText());
-        State.setScene("login");
+        View.switchPage(Page.LOGIN);
     }
 
     @Override
