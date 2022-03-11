@@ -17,6 +17,9 @@ import javafx.scene.layout.HBox;
 import model.User;
 import model.Users;
 
+/**
+ * Contrôleur de la page de choix de l'utilisateur
+ */
 public class UsersController implements Initializable {
     @FXML
     private ScrollPane scrollPane;

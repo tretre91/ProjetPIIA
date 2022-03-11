@@ -96,6 +96,14 @@ public abstract class Database {
         return connection.createStatement();
     }
 
+    /**
+     * Vérifie qu'une table existe dans la base de données
+     * 
+     * @param table
+     *            le nom de la table à chercher
+     * @return true si la table existe, false sinon
+     * @throws SQLException
+     */
     private static boolean checkTable(String table) throws SQLException {
         tableExistsStatement.setString(1, table);
         ResultSet rs = tableExistsStatement.executeQuery();
@@ -116,12 +124,12 @@ public abstract class Database {
 
             statement.executeUpdate(
                   "CREATE TABLE user ("
-                + "idu INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "name TEXT UNIQUE NOT NULL,"
-                + "password TEXT NOT NULL,"
-                + "status INTEGER NOT NULL CHECK (0 <= status AND status <= 3),"
-                + "avatar TEXT,"
-                + "CHECK (password NOT LIKE '' OR status = 3))"
+                + "  idu INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "  name TEXT UNIQUE NOT NULL,"
+                + "  password TEXT NOT NULL,"
+                + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3),"
+                + "  avatar TEXT,"
+                + "  CHECK (password NOT LIKE '' OR status = 3))"
             );
 
             

@@ -1,14 +1,12 @@
 package view;
 
 /**
- * Enumeration contenant les différentes pages de l'application
- * 
+ * <p>Enumeration contenant les différentes pages de l'application</p>
  * Chaque page est associée à un fichier .fxml dont le nom peut être obtenu à
  * l'aide de la méthode {@link #getFilename()}
  */
 public enum Page {
-    USER_SELECTION("users.fxml"),
-    LOGIN("login.fxml");
+    USER_SELECTION("users.fxml"), LOGIN("login.fxml");
 
     private final String filename;
 
@@ -17,9 +15,9 @@ public enum Page {
     }
 
     /**
-     * Gets the name of the fxml file corresponding to this page // TODO : pk c'est en anglais ?
+     * Renvoie le nom du fichier .fxml associé à cette page
      * 
-     * @return the fxml file's name
+     * @return le nom du fichier fxml correspondant
      */
     public String getFilename() {
         return filename;

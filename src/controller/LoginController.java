@@ -13,6 +13,9 @@ import model.Users;
 import view.Page;
 import view.View;
 
+/**
+ * Contrôleur de la page de connexion
+ */
 public class LoginController implements Initializable {
     @FXML
     private PasswordField passwordField;
