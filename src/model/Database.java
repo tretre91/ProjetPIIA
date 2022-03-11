@@ -13,6 +13,7 @@ import java.sql.Statement;
 public abstract class Database {
     private static Connection connection;
     private static PreparedStatement tableExistsStatement;
+    private static final String defaultDatabasePath = Database.class.getResource("/resources/").getPath() + "database.db";
 
     /**
      * Ouvre une connexion à la base de données par défaut
@@ -20,7 +21,7 @@ public abstract class Database {
      * @return false si la connexion a échoué, true sinon
      */
     public static boolean open() {
-        return open(Database.class.getResource("/resources/database.db").getPath());
+        return open(defaultDatabasePath);
     }
 
     /**
