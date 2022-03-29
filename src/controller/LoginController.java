@@ -35,8 +35,10 @@ public class LoginController implements Initializable {
 
         try {
             if (Users.checkPassword(username, password)) {
-                System.out.println("Congrats, this is the right password");
+                //System.out.println("Congrats, this is the right password");
                 // TODO : passage à la page d'acceuil
+                
+                View.switchPage(getHomePage());
             } else {
                 System.out.println("Wrong password :(");
                 passwordField.setStyle("-fx-border-color: red");
@@ -45,7 +47,27 @@ public class LoginController implements Initializable {
             System.err.println(e.getMessage());
             // error("Une erreur interne a eu lieu")
         }
-        System.out.println("Password is: " + password);
+        //System.out.println("Password is: " + password);
+    }
+
+    public Page getHomePage(){
+        //TODO
+        switch(State.getCurrentId()){
+            case 0:
+            return Page.ACCOUNT_HOME_PRIVILEGED;
+            case 1:
+            return Page.ACCOUNT_HOME_PRIVILEGED;
+            case 2:
+            return Page.ACCOUNT_HOME;
+            case 3:
+            //On skip dans le cas des enfants
+            return Page.ACCOUNT_HOME;
+        }
+        return null;
+    }
+
+    public void setUser(){
+        //TODO redéfini les "paramètres" de l'user actuel dans State
     }
 
     @Override

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Icon?>
+<?import com.gluonhq.charm.glisten.control.ToggleButtonGroup?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccountCreationController">
+    <children>
+      <Button mnemonicParsing="false" onAction="#goBack" text="Retour" />
+      <TextField fx:id="fieldNom" promptText="Nom" />
+      <TextField fx:id="fieldIdentifiant" promptText="Identifiant" />
+      <PasswordField fx:id="fieldMDP" alignment="CENTER" promptText="Mot de passe" />
+      <PasswordField fx:id="fieldConfirmationMDP" alignment="CENTER" promptText="Confirmation mot de passe" />
+      <ToggleButtonGroup selectionType="SINGLE">
+          <toggles>
+              <ToggleButton>
+                  <graphic>
+                      <Icon content="FORMAT_ALIGN_LEFT" />
+                  </graphic>
+              </ToggleButton>
+              <ToggleButton selected="true">
+                  <graphic>
+                      <Icon content="FORMAT_ALIGN_CENTER" />
+                  </graphic>
+              </ToggleButton>
+              <ToggleButton>
+                  <graphic>
+                      <Icon content="FORMAT_ALIGN_RIGHT" />
+                  </graphic>
+              </ToggleButton>
+          </toggles>
+      </ToggleButtonGroup>
+      <Button fx:id="buttonValider" mnemonicParsing="false" onAction="#confirmCreation" text="Valider" />
+   </children>
+</VBox>

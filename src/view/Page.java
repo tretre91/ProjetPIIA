@@ -1,12 +1,15 @@
 package view;
 
 /**
- * <p>Enumeration contenant les différentes pages de l'application</p>
+ * Enumeration contenant les différentes pages de l'application
  * Chaque page est associée à un fichier .fxml dont le nom peut être obtenu à
  * l'aide de la méthode {@link #getFilename()}
  */
 public enum Page {
-    USER_SELECTION("users.fxml"), LOGIN("login.fxml");
+    USER_SELECTION("users.fxml"), LOGIN("login.fxml"), 
+    ACCOUNT_HOME_PRIVILEGED("accountHomePrivileged.fxml"), ACCOUNT_CREATION_PRIVILEGED("accountCreationPrivilegedTest.fxml"), 
+    ACCOUNT_HOME("accountHome.fxml"),
+    MANAGE_FILES("manageFiles.fxml");
 
     private final String filename;
 
