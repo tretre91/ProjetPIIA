@@ -1,6 +1,9 @@
 package controller;
 
+import model.Status;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -12,11 +15,24 @@ import javafx.scene.text.Text;
 import model.Users;
 import view.Page;
 import view.View;
+import model.Database;
 
 /**
  * Contrôleur de la page de connexion
  */
 public class LoginController implements Initializable {
+    private static PreparedStatement getUserInfo;
+
+    static {
+        if (Database.isValid() || Database.open()) {
+            try {
+                getUserInfo = Database.prepareStatement("SELECT status FROM user WHERE name = ?");
+            } catch (SQLException e) {
+                System.err.printf("ERROR:", e.getMessage());
+            }
+        }
+    }
+
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -35,9 +51,8 @@ public class LoginController implements Initializable {
 
         try {
             if (Users.checkPassword(username, password)) {
-                //System.out.println("Congrats, this is the right password");
-                // TODO : passage à la page d'acceuil
-                
+                getUserInfo.setString(1, username); //récupération du status dans la base, on a 1 ligne 1 colonne
+                State.setCurrentUser(username, Status.fromInt(getUserInfo.executeQuery().getInt(1))); //mise à jour de l'utilisateur actuel
                 View.switchPage(getHomePage());
             } else {
                 System.out.println("Wrong password :(");
@@ -47,19 +62,18 @@ public class LoginController implements Initializable {
             System.err.println(e.getMessage());
             // error("Une erreur interne a eu lieu")
         }
-        //System.out.println("Password is: " + password);
     }
 
     public Page getHomePage(){
         //TODO
-        switch(State.getCurrentId()){
-            case 0:
+        switch(State.getCurrentStatus()){
+            case ADMIN :
             return Page.ACCOUNT_HOME_PRIVILEGED;
-            case 1:
+            case PARENT:
             return Page.ACCOUNT_HOME_PRIVILEGED;
-            case 2:
+            case TEEN:
             return Page.ACCOUNT_HOME;
-            case 3:
+            case CHILD:
             //On skip dans le cas des enfants
             return Page.ACCOUNT_HOME;
         }
@@ -67,7 +81,7 @@ public class LoginController implements Initializable {
     }
 
     public void setUser(){
-        //TODO redéfini les "paramètres" de l'user actuel dans State
+        //TODO: redéfini les "paramètres" de l'user actuel dans State
     }
 
     @Override

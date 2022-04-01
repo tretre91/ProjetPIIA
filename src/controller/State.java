@@ -1,15 +1,22 @@
 package controller;
 
+import model.Status;
+
 import model.Database;
 
 /**
  * Classe contenant des informations utiles sur l'état global de l'application
  */
 public abstract class State {
-    static private String currentUser = "admin"; //utiliser son id plutôt ?
-    static private int currentId = 0;
+    static private String currentUser = "blank";
+    static private Status currentStatus = null;
 
-    static public void setCurrentUser(String user) {
+    static public void setCurrentUser(String user, Status status) {
+        currentUser = user;
+        currentStatus = status;
+    }
+
+    static public void setCurrentUser(String user){
         currentUser = user;
     }
 
@@ -17,18 +24,7 @@ public abstract class State {
         return currentUser;
     }
 
-    static public void setCurrentId(int id){
-        currentId = id;
-    }
-
-    static public int getCurrentId(){
-        return currentId;
-    }
-
-    static public int getCurrentStatus(){
-        //TODO select status from user where
-        //Database.prepareStatement("select status from user where idu==" + currentId + ";");
-        //un bail comme ça ?
-        return 0;
+    static public Status getCurrentStatus(){
+        return currentStatus;
     }
 }
