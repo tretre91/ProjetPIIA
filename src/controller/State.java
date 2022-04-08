@@ -1,7 +1,8 @@
 package controller;
 
 import model.Status;
-
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import model.Database;
 
 /**
@@ -10,6 +11,15 @@ import model.Database;
 public abstract class State {
     static private String currentUser = "blank";
     static private Status currentStatus = null;
+    static private Stage stage = null;
+
+    public static Stage getStage(){
+        return stage;
+    }
+
+    public static void setStage(Stage s){
+        stage = s;
+    }
 
     static public void setCurrentUser(String user, Status status) {
         currentUser = user;

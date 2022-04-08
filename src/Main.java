@@ -1,3 +1,4 @@
+import controller.State;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -17,6 +18,7 @@ public class Main extends Application {
         View.setScene(scene);
         View.switchPage(Page.USER_SELECTION);
         primaryStage.show();
+        State.setStage(primaryStage);
     }
 
     public static void main(String[] args) {

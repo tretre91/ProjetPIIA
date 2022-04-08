@@ -6,10 +6,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddVideoController">
    <children>
-      <TextField layoutX="218.0" layoutY="120.0" promptText="Nom" />
-      <Button layoutX="259.0" layoutY="71.0" mnemonicParsing="false" text="Parcourir..." />
+      <TextField fx:id="fileName" layoutX="218.0" layoutY="65.0" onInputMethodTextChanged="#refreshStyle" promptText="Fichier" />
+      <TextField fx:id="newName" layoutX="218.0" layoutY="120.0" promptText="Nom" />
+      <Button layoutX="382.0" layoutY="65.0" mnemonicParsing="false" onAction="#selectFile" text="Parcourir..." />
       <TextField layoutX="218.0" layoutY="177.0" promptText="Catégorie" />
-      <Button layoutX="272.0" layoutY="233.0" mnemonicParsing="false" text="Ajouter" />
+      <Button defaultButton="true" layoutX="272.0" layoutY="233.0" mnemonicParsing="false" onAction="#tryAjouter" text="Ajouter" />
       <Button cancelButton="true" layoutY="3.0" mnemonicParsing="false" onAction="#goBack" text="Retour" />
    </children>
 </AnchorPane>
