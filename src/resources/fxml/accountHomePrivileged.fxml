@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccountHomeController">
    <children>
       <VBox fx:id="mainPane" prefHeight="400.0" prefWidth="400.0">
@@ -113,7 +112,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <DialogPane fx:id="disconnectDialog" contentText="Voulez-vous vriament vous déconnecter ?" headerText="Déconnexion" style="-fx-border-color: rgb(125, 125, 125); -fx-border-width: 2; -fx-border-radius: 5; -fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+            <DialogPane fx:id="disconnectDialog" contentText="Voulez-vous vraiment vous déconnecter ?" headerText="Déconnexion" style="-fx-border-color: rgb(125, 125, 125); -fx-border-width: 2; -fx-border-radius: 5; -fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                <buttonTypes>
                   <ButtonType fx:constant="YES" />
                   <ButtonType fx:constant="CANCEL" />

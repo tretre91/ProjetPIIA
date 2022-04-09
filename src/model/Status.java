@@ -13,14 +13,16 @@ public enum Status {
     }
 
     /**
-     * <p>Récupère le niveau de privilège (entier entre 0 et 3) associé à un statut</p>
-     * 
+     * <p>
+     * Récupère le niveau de privilège (entier entre 0 et 3) associé à un statut
+     * </p>
      * <ul>
-     *   <li>0 pour l'admin</li>
-     *   <li>1 pour les parents</li>
-     *   <li>2 pour les adolescents</li>
-     *   <li>3 pour les enfants</li>
+     * <li>0 pour l'admin</li>
+     * <li>1 pour les parents</li>
+     * <li>2 pour les adolescents</li>
+     * <li>3 pour les enfants</li>
      * </ul>
+     * 
      * @return Le niveau de privilège associé à ce statut
      */
     public int getValue() {
@@ -47,5 +49,16 @@ public enum Status {
             default:
                 return CHILD; // TODO : gestion d'erreur ?
         }
+    }
+
+    /**
+     * Inqique si le statut à une priorité moindre qu'un autre
+     * 
+     * @param other
+     *            Le statut à comparer
+     * @return true si ce statut a moins de droit que other
+     */
+    public boolean lessThan(Status other) {
+        return this.value > other.getValue();
     }
 }
