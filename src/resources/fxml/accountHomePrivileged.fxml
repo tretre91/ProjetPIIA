@@ -1,19 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccountHomeController">
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AccountHomeController">
    <children>
-      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#disconnect" text="Disconnect" />
-      <Button alignment="CENTER" layoutX="238.0" layoutY="121.0" mnemonicParsing="false" onAction="#goToCreate" text="Ajouter un compte" textAlignment="CENTER" />
-      <Button alignment="CENTER" layoutX="242.0" layoutY="170.0" mnemonicParsing="false" onAction="#goToManage" text="Gérer les fichiers" textAlignment="CENTER">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets>
-      </Button>
-      <Button alignment="CENTER" layoutX="255.0" layoutY="219.0" mnemonicParsing="false" onAction="#goToLib" text="Bibliothèque" textAlignment="CENTER" />
+      <VBox fx:id="mainPane" prefHeight="400.0" prefWidth="400.0">
+         <children>
+            <Button cancelButton="true" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#disconnect" stylesheets="@../css/iconButton.css">
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+                     <image>
+                        <Image url="@../icons/outline_logout_black_48dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <tooltip>
+                  <Tooltip text="Déconnexion" />
+               </tooltip>
+            </Button>
+            <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Acceuil" textAlignment="CENTER">
+               <font>
+                  <Font name="Lato Semibold" size="28.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="10.0" />
+               </VBox.margin>
+            </Label>
+            <GridPane VBox.vgrow="ALWAYS">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <VBox alignment="CENTER" GridPane.columnIndex="1">
+                     <children>
+                        <Button alignment="CENTER" graphicTextGap="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToCreate" stylesheets="@../css/menuButton.css" text="Ajouter un compte" textAlignment="CENTER">
+                           <graphic>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/baseline_account_circle_black_48dp.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button alignment="CENTER" graphicTextGap="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToManage" stylesheets="@../css/menuButton.css" text="Gérer les fichiers" textAlignment="CENTER">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <graphic>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/outline_folder_black_48dp.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                        <Button alignment="CENTER" graphicTextGap="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#goToLib" stylesheets="@../css/menuButton.css" text="Bibliothèque" textAlignment="CENTER">
+                           <graphic>
+                              <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/outline_video_library_black_48dp.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </GridPane>
+         </children>
+      </VBox>
+      <GridPane fx:id="dialogPane" style="-fx-background-color: rgba(125, 125, 125, 0.5);">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <DialogPane fx:id="disconnectDialog" contentText="Voulez-vous vriament vous déconnecter ?" headerText="Déconnexion" style="-fx-border-color: rgb(125, 125, 125); -fx-border-width: 2; -fx-border-radius: 5; -fx-background-radius: 5;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+               <buttonTypes>
+                  <ButtonType fx:constant="YES" />
+                  <ButtonType fx:constant="CANCEL" />
+               </buttonTypes>
+            </DialogPane>
+         </children>
+      </GridPane>
    </children>
-</AnchorPane>
+</StackPane>
