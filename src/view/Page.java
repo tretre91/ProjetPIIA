@@ -7,7 +7,7 @@ package view;
  */
 public enum Page {
     USER_SELECTION("users.fxml"), LOGIN("login.fxml"), 
-    ACCOUNT_HOME_PRIVILEGED("accountHomePrivileged.fxml"), ACCOUNT_CREATION_PRIVILEGED("accountCreationPrivileged.fxml"), 
+    ACCOUNT_HOME_PRIVILEGED("accountHomePrivileged.fxml"),
     ACCOUNT_HOME("accountHome.fxml"), ACCOUNT_CREATION("accountCreation.fxml"),
     MANAGE_FILES_PRIVILEGED("manageFilesPrivileged.fxml"),
     ADD_VIDEO("addVideo.fxml");

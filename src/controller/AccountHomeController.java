@@ -30,11 +30,7 @@ public class AccountHomeController implements Initializable {
 
     @FXML
     private void goToCreate() {
-        if (State.getCurrentStatus() == Status.ADMIN) {
-            View.switchPage(Page.ACCOUNT_CREATION_PRIVILEGED);
-        } else {
-            View.switchPage(Page.ACCOUNT_CREATION);
-        }
+        View.switchPage(Page.ACCOUNT_CREATION);
     }
 
     @FXML
@@ -56,11 +52,13 @@ public class AccountHomeController implements Initializable {
         dialogPane.setVisible(false);
 
         Button cancelDisconnect = (Button)disconnectDialog.lookupButton(ButtonType.CANCEL);
+        
         cancelDisconnect.setOnAction(event -> {
             dialogPane.setVisible(false);
         });
 
         Button comfirmDisconnect = (Button)disconnectDialog.lookupButton(ButtonType.YES);
+        
         comfirmDisconnect.setOnAction(event -> {
             View.switchPage(Page.USER_SELECTION);
         });

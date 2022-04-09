@@ -1,0 +1,25 @@
+.button {
+    -fx-border-color: #bababa;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-background-color: rgb(255, 255, 255);
+    -fx-font-family: "Lato", Helvetica, Arial, sans-serif;
+    -fx-font-size: 1em;
+    -fx-text-fill: black;
+  }
+  
+  .button:hover {
+    -fx-border-color: black;
+    -fx-background-color: rgba(201, 201, 201, 0.5);
+  }
+  
+  .button:focused {
+    -fx-border-color: rgb(124, 124, 124);
+  }
+  
+  .button:pressed {
+    -fx-background-color: rgba(80, 80, 80, 0.5);
+    -fx-text-fill: white;
+  }
+  
