@@ -1,21 +1,14 @@
 package controller;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.PreparedStatement;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import model.Database;
-import model.User;
 import view.Page;
 import view.View;
 

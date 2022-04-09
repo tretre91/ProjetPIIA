@@ -19,7 +19,7 @@ public abstract class Users {
             try {
                 getUsersStatement = Database.prepareStatement("SELECT name, status, avatar FROM user");
                 checkPasswordStatement = Database
-                        .prepareStatement("SELECT idu FROM user WHERE name = ? AND password = ?");
+                        .prepareStatement("SELECT name, status, avatar FROM user WHERE name = ? AND password = ?");
                 createUserStatement = Database.prepareStatement(
                         "INSERT OR ABORT INTO user(name, password, status, avatar) VALUES (?, ?, ?, ?)");
 
@@ -82,18 +82,22 @@ public abstract class Users {
      *            l'utilisateur dont on souhaite vérifier le mot de passe
      * @param password
      *            le mot de passe à vérifier
-     * @return true si password correspond au mot de passe de user, false sinon
+     * @return L'utilisateur si le mot de passe correspond, null sinon
      * @throws SQLException
      */
-    public static boolean checkPassword(String user, String password) throws SQLException {
+    public static User checkPassword(String user, String password) throws SQLException {
         checkPasswordStatement.setString(1, user);
         checkPasswordStatement.setString(2, password);
 
         ResultSet rs = checkPasswordStatement.executeQuery();
-        boolean ok = rs.next();
+
+        User result = null;
+        if (rs.next()) {
+            result = new User(rs.getString("name"), Status.fromInt(rs.getInt("status")), rs.getString("avatar"));
+        }
 
         rs.close();
         checkPasswordStatement.clearParameters();
-        return ok;
+        return result;
     }
 }

@@ -1,9 +1,6 @@
 package controller;
 
-import model.Status;
 import java.net.URL;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
@@ -12,27 +9,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.PasswordField;
 import javafx.scene.text.Text;
+import model.User;
 import model.Users;
 import view.Page;
 import view.View;
-import model.Database;
 
 /**
  * Contrôleur de la page de connexion
  */
 public class LoginController implements Initializable {
-    private static PreparedStatement getUserInfo;
-
-    static {
-        if (Database.isValid() || Database.open()) {
-            try {
-                getUserInfo = Database.prepareStatement("SELECT status FROM user WHERE name = ?");
-            } catch (SQLException e) {
-                System.err.printf("ERROR:", e.getMessage());
-            }
-        }
-    }
-
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -50,9 +35,9 @@ public class LoginController implements Initializable {
         String password = passwordField.getText();
 
         try {
-            if (Users.checkPassword(username, password)) {
-                getUserInfo.setString(1, username); //récupération du status dans la base, on a 1 ligne 1 colonne
-                State.setCurrentUser(username, Status.fromInt(getUserInfo.executeQuery().getInt(1))); //mise à jour de l'utilisateur actuel
+            User user = Users.checkPassword(username, password);
+            if (user != null) {
+                State.setCurrentUser(user); //mise à jour de l'utilisateur actuel
                 View.switchPage(getHomePage());
             } else {
                 System.out.println("Wrong password :(");
@@ -86,7 +71,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resources) {
-        username = State.getCurrentUser();
+        username = State.getCurrentUsername();
         header.setText("Bienvenue " + username + " !");
 
         passwordField.setStyle("-fx-border-color: transparent");

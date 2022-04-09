@@ -2,13 +2,11 @@ package controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import model.Status;
 import view.Page;
 import view.View;
-import javafx.scene.control.Button;
-import model.Status;
 
 public class AccountHomeController implements Initializable {
     

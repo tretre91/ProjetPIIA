@@ -1,16 +1,14 @@
 package controller;
 
-import model.Status;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import model.Database;
+import model.Status;
+import model.User;
 
 /**
  * Classe contenant des informations utiles sur l'état global de l'application
  */
 public abstract class State {
-    static private String currentUser = "blank";
-    static private Status currentStatus = null;
+    static private User currentUser = new User("blank", null, null);
     static private Stage stage = null;
 
     public static Stage getStage(){
@@ -21,20 +19,23 @@ public abstract class State {
         stage = s;
     }
 
-    static public void setCurrentUser(String user, Status status) {
+    static public void setCurrentUser(User user) {
         currentUser = user;
-        currentStatus = status;
     }
 
     static public void setCurrentUser(String user){
-        currentUser = user;
+        currentUser.setName(user);
     }
 
-    static public String getCurrentUser() {
+    static public User getCurrentUser() {
         return currentUser;
     }
 
+    static public String getCurrentUsername() {
+        return currentUser.getName();
+    }
+
     static public Status getCurrentStatus(){
-        return currentStatus;
+        return currentUser.getStatus();
     }
 }

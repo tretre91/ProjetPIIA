@@ -117,11 +117,8 @@ public abstract class Database {
         return exists;
     }
 
-    /*public static void addVideo(String fileName, String newName, ArrayList<Category> categories){
-    }*/
-
     private static void initialize() throws SQLException {
-        // si la table user n'existe pas, on considère que la base de donnée n'a pas été initialisée
+        // si la table authorization n'existe pas, on considère que la base de donnée n'a pas été initialisée
         if (!checkTable("authorization")) {
             Statement statement = connection.createStatement();
 
