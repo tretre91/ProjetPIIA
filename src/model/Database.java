@@ -47,6 +47,7 @@ public abstract class Database {
             return true;
         } catch (SQLException e) {
             System.err.printf("ERROR: failed to open database '%s' (%s)\n", databaseFile, e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -121,13 +122,13 @@ public abstract class Database {
 
     private static void initialize() throws SQLException {
         // si la table user n'existe pas, on considère que la base de donnée n'a pas été initialisée
-        if (!checkTable("user")) {
+        if (!checkTable("authorization")) {
             Statement statement = connection.createStatement();
 
             // @formatter:off
 
             statement.executeUpdate(
-                  "CREATE TABLE user ("
+                  "CREATE TABLE IF NOT EXISTS user ("
                 + "  idu INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "  name TEXT UNIQUE NOT NULL,"
                 + "  password TEXT NOT NULL,"
@@ -136,8 +137,27 @@ public abstract class Database {
                 + "  CHECK (password NOT LIKE '' OR status = 3))"
             );
 
-            
-            // TODO : création des autres tables
+            statement.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS video ("
+                + "  idv INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "  idc INTEGER REFERENCES category(idc) NOT NULL,"
+                + "  name TEXT UNIQUE NOT NULL,"
+                + "  path TEXT NOT NULL)"
+            );
+
+            statement.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS category ("
+                + "  idc INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "  name TEXT UNIQUE NOT NULL,"
+                + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3))"
+            );
+
+            statement.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS authorization ("
+                + "  idu INTEGER REFERENCES user(idu) ON DELETE CASCADE NOT NULL,"
+                + "  idv INTEGER REFERENCES video(idv) ON DELETE CASCADE NOT NULL,"
+                + "  UNIQUE (idu, idv))"
+            );
             
             // @formatter:on
 

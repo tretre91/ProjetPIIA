@@ -1,18 +1,15 @@
 # Structure de la base de données
 
 - User(idu, name, password, status, avatar)
-- Video(idv, title, filename)
-- Category(idc, name)
-- Library(idc, idv)
+- Video(idv, idc, name, path)
+- Category(idc, name, status)
 - Authorization(idu, idv)
 
 Un utilisateur a un identifiant, un nom, un mot de passe, un statut (entier) et un avatar (chemin vers un fichier image).
 
-Une vidéo a un identifiant, un titre, et un nom de fichier associé.
+Une vidéo a un identifiant, une catégorie, un titre, et un fichier associé.
 
-Une catégorie a un identifiant et un nom.
-
-La bibliotèque associe des catégories à des vidéos
+Une catégorie a un identifiant, un nom et un niveau de privilège.
 
 On associe également un utilisateur aux vidéos auxquelles il a accès
 
@@ -37,37 +34,29 @@ L'admin et les parents ont accès à toutes les vidéos de la bibliotèqhue, les
 ```sql
 -- on utilise sqlite ici
 
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
     idu INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     status INTEGER NOT NULL CHECK (0 <= status AND status <= 3)
     avatar TEXT,
-    CHECK (password NOT LIKE '' OR status = 3)
-);
+    CHECK (password NOT LIKE '' OR status = 3));
 
-CREATE TABLE video (
+CREATE TABLE IF NOT EXISTS video (
     idv INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    filename TEXT NOT NULL
-);
+    idc INTEGER REFERENCES category(idc) NOT NULL,
+    name TEXT UNIQUE NOT NULL,
+    path TEXT NOT NULL);
 
-CREATE TABLE category (
+CREATE TABLE IF NOT EXISTS category (
     idc INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL
-);
+    name TEXT UNIQUE NOT NULL,
+    status INTEGER NOT NULL CHECK (0 <= status AND status <= 3));
 
-CREATE TABLE library (
-    idc FOREIGN KEY REFERENCES category(idc) ON DELETE CASCADE NOT NULL,
-    idv FOREIGN KEY REFERENCES video(idv) ON DELETE CASCADE NOT NULL,
-    PRIMARY KEY (idc, idv)
-);
-
-CREATE TABLE authorization (
-    idu FOREIGN KEY REFERENCES user(idu) ON DELETE CASCADE, -- un id null indique que la vidéo est accessible aux utilisateurs enfants
-    idv FOREIGN KEY REFERENCES video(idv) ON DELETE CASCADE NOT NULL,
-    UNIQUE (idu, idv)
-);
+CREATE TABLE IF NOT EXISTS authorization (
+    idu INTEGER REFERENCES user(idu) ON DELETE CASCADE NOT NULL,
+    idv INTEGER REFERENCES video(idv) ON DELETE CASCADE NOT NULL,
+    UNIQUE (idu, idv));
 ```
 
 ## Accès aux données
