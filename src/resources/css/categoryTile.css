@@ -1,0 +1,25 @@
+.category-tile {
+    -fx-background-color: white;
+    -fx-border-color: grey;
+    -fx-border-width: 2px;
+}
+
+.category-label {
+    -fx-background-radius: 30px;
+    -fx-text-fill: white;
+    -fx-label-padding: 5px;
+    -fx-border-color: transparent;
+    -fx-background-insets: 11px 3px;
+}
+
+.category-label.parent-label{
+    -fx-background-color: rgb(161, 0, 0);
+}
+
+.category-label.teen-label {
+    -fx-background-color: rgb(180, 165, 0);
+}
+
+.category-label.child-label {
+    -fx-background-color: rgb(0, 175, 35);
+}

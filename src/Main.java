@@ -14,6 +14,7 @@ public class Main extends Application {
         primaryStage.setHeight(600);
         primaryStage.setWidth(800);
         Scene scene = new Scene(new Pane());
+        scene.getStylesheets().add("/resources/css/categoryTile.css");
         primaryStage.setScene(scene);
         View.setScene(scene);
         View.switchPage(Page.USER_SELECTION);

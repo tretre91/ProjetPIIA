@@ -32,6 +32,6 @@ public class ManageFilesController {
 
     @FXML
     public void goToManageCat(){
-        System.out.println("Manage Categories");
+        View.switchPage(Page.MANAGE_CATEGORIES);
     }
 }
