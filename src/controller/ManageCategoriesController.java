@@ -10,6 +10,7 @@ import javafx.scene.layout.TilePane;
 import model.Category;
 import model.Videos;
 import view.CategoryTile;
+import view.Page;
 import view.View;
 
 public class ManageCategoriesController implements Initializable {
@@ -22,7 +23,8 @@ public class ManageCategoriesController implements Initializable {
 
     @FXML
     private void addCategory() {
-        System.out.println("Ajout de catégorie :)"); // TODO
+        View.pushPage();
+        View.switchPage(Page.ADD_CATEGORY);
     }
 
     @Override

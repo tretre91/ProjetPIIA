@@ -11,6 +11,7 @@ public enum Page {
     ACCOUNT_HOME("accountHome.fxml"), ACCOUNT_CREATION("accountCreation.fxml"),
     MANAGE_FILES_PRIVILEGED("manageFilesPrivileged.fxml"),
     MANAGE_CATEGORIES("manageCategories.fxml"),
+    ADD_CATEGORY("addCategory.fxml"),
     ADD_VIDEO("addVideo.fxml");
 
     private final String filename;

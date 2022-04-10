@@ -84,16 +84,16 @@ public class AccountCreationController implements Initializable {
         parentToggle.setUserData(Status.PARENT);
         teenToggle.setUserData(Status.TEEN);
 
+        if (State.getCurrentStatus().lessThan(Status.ADMIN)) {
+            // TODO : ajouter un infobulle pour indiquer que le compte ne peut pas créer de parents
+            parentToggle.setDisable(true);
+        }
+
         parentToggle.setOnAction(event -> {
             if (!parentToggle.isSelected()) {
                 parentToggle.setSelected(true);
             }
         });
-
-        if (State.getCurrentStatus().lessThan(Status.ADMIN)) {
-            // TODO : ajouter un infobulle pour indiquer que le compte ne peut pas créer de parents
-            parentToggle.setDisable(true);
-        }
 
         teenToggle.setOnAction(event -> {
             if (!teenToggle.isSelected()) {
