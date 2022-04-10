@@ -82,7 +82,7 @@ public abstract class Videos {
 
             return true;
         } catch (SQLException e) {
-            if (e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE.code) {
+            if (e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT.code) {
                 return false;
             } else {
                 throw e;
@@ -105,10 +105,11 @@ public abstract class Videos {
             addCategoryStatement.setInt(2, privilege.getValue());
             addCategoryStatement.executeUpdate();
         } catch (SQLException e) {
-            if (e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT_UNIQUE.code) {
+            if (e.getErrorCode() == SQLiteErrorCode.SQLITE_CONSTRAINT.code) {
                 return false;
             } else {
                 System.out.println(e.getMessage());
+                e.printStackTrace();
             }
         }
         return true;
