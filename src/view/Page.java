@@ -9,7 +9,7 @@ public enum Page {
     USER_SELECTION("users.fxml"), LOGIN("login.fxml"), 
     ACCOUNT_HOME_PRIVILEGED("accountHomePrivileged.fxml"), ACCOUNT_CREATION_PRIVILEGED("accountCreationPrivileged.fxml"), 
     ACCOUNT_HOME("accountHome.fxml"), ACCOUNT_CREATION("accountCreation.fxml"),
-    MANAGE_FILES_PRIVILEGED("manageFilesPrivileged.fxml"),
+    MANAGE_FILES_PRIVILEGED("manageFilesPrivileged.fxml"), LIBRARY("library.fxml"),
     ADD_VIDEO("addVideo.fxml");
 
     private final String filename;

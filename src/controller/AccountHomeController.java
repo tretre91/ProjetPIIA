@@ -37,7 +37,7 @@ public class AccountHomeController implements Initializable {
 
     @FXML
     private void goToLib(){
-        System.out.println("later");
+        View.switchPage(Page.LIBRARY);
     }
 
     @Override

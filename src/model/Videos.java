@@ -31,7 +31,7 @@ public abstract class Videos {
                         .prepareStatement("INSERT OR ABORT INTO category(name, status) VALUES (?, ?)");
                 getVideoIdStatement = Database.prepareStatement("SELECT idv FROM video WHERE name = ?");
                 getCategoryIdStatement = Database.prepareStatement("SELECT idc FROM category WHERE name = ?");
-                addCategory("Default", Status.CHILD);
+                addCategory("default", Status.CHILD);
             } catch (SQLException e) {
                 System.err.printf("ERROR: failure in Users class initialization (%s)\n", e.getMessage());
             }
@@ -73,6 +73,13 @@ public abstract class Videos {
     public static boolean addVideo(String name, String path, String category) throws SQLException {
         try {
             Integer idc = getCategoryId(category);
+            System.out.println("\nCatégorie : " + category);
+            //TODO: temporaire
+            if(idc == null){
+                addCategory(category, Status.fromInt(0));
+                idc = getCategoryId(category);
+            }
+            System.out.println("ID : " + idc);
 
             addVideoStatement.setInt(1, idc);
             addVideoStatement.setString(2, name);
@@ -130,7 +137,7 @@ public abstract class Videos {
 
             videos = new ArrayList<>();
             while (rs.next()) {
-                videos.add(new Video(rs.getString(0), rs.getString(1), category));
+                videos.add(new Video(rs.getString(1), rs.getString(2), category));
             }
 
             return videos;
