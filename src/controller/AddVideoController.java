@@ -1,25 +1,40 @@
 package controller;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import model.Database;
 import view.Page;
 import view.View;
 
-public class AddVideoController {
-    @FXML private ToggleGroup groupCategory; //TODO: mettre le bon type
+public class AddVideoController implements Initializable{
+    static PreparedStatement getAllVideoNames;
+    static{
+        try{
+            getAllVideoNames = Database.prepareStatement("SELECT name FROM video");
+        }catch(SQLException e){
+            System.err.println(e.getMessage());
+        }
+    }
+    
+    @FXML private TextField category; //TODO: mettre le bon type
 
-    @FXML private TextField fileName;
-    @FXML private File selectedFile;
+    @FXML private TextField fileName; //le texfield où on rentre le nom du fichier
+    @FXML private File selectedFile; //le fichier sélectionné via parcousr
 
-    @FXML private TextField newName;
-    //private static ArrayList<Category> categories;
+    @FXML private TextField newName; //le nom de la vidéo dans le système
     
     @FXML
     private void goBack(){
@@ -27,13 +42,8 @@ public class AddVideoController {
     }
 
     @FXML
-    private void refreshStyle(){
-        fileName.setStyle("-fx-border-color: transparent");
-    }
-
-    @FXML
-    private void setErrorStyle(){
-        fileName.setStyle("-fx-border-color: red");
+    private void setErrorStyle(Node n){
+        n.setStyle("-fx-border-color: red");
     }
 
     @FXML
@@ -47,51 +57,51 @@ public class AddVideoController {
         selectedFile = fileChooser.showOpenDialog(State.getStage());
         if(selectedFile != null){
             fileName.setText(selectedFile.getName());
-            refreshStyle();
-            System.out.println(fileName.getText());
         }else{
-            setErrorStyle();
+            setErrorStyle(fileName);
         }
     }
 
     @FXML
-    private void tryAjouter(){
-        //si fileName.getText() qui est valide, on le prend
-        //sinon si selectedFile.getName() est valide, on le prend
-        //+
+    private void tryAjouter() throws SQLException{
         String fileNameFormatté = formatFileName(fileName.getText());
         
-        if(fileNameFormatté != null){
-            if(isValidPath(fileName.getText())){
-                selectedFile = new File(fileName.getText()); //le path vers la vidéo, faut vérifier que c'est bien une vidéo justement
-                if(/*newName == null ||*/ newName.getText().isEmpty() || newName.getText().isBlank()){
-                    addVideo(selectedFile.getAbsolutePath(), fileNameFormatté);
-                }else{
-                    addVideo(selectedFile.getAbsolutePath(), newName.getText());
-                }
+        if(isPathValid(fileName.getText())){
+            if(isNameValid(newName.getText())){
+                addVideo(selectedFile.getAbsolutePath(), newName.getText());
+            }else if(isNameValid(fileNameFormatté)){
+                addVideo(selectedFile.getAbsolutePath(), fileNameFormatté);
             }else{
-                setErrorStyle();
-            }
-            
-        }else if(selectedFile != null){
-            String selectedFileFormatté = formatFileName(selectedFile.getName());
-            if(selectedFileFormatté != null){
-                if(/*newName == null ||*/ newName.getText().isEmpty() || newName.getText().isBlank()){
-                    addVideo(selectedFile.getAbsolutePath(), selectedFileFormatté);
-                }else{
-                    addVideo(selectedFile.getAbsolutePath(), newName.getText());
-                }
-            }else{
-                setErrorStyle();
+                setErrorStyle(newName);
+                //afficher une erreur dédiée
             }
         }else{
-            setErrorStyle();
+            setErrorStyle(fileName);
+            //afficher une erreur dédiée
         }
     }
 
-    private void addVideo(String path, String newName){
-        System.out.println(path + " : " + newName + " ajouté");
-        //Database.addVideo(formatFileName(), newName, categories);
+    @FXML
+    private void printBD() throws SQLException{
+        try{
+            PreparedStatement truc = Database.prepareStatement("SELECT name FROM video");
+            ResultSet rs = truc.executeQuery();
+            System.out.println("\nVidéos :");
+            while(rs.next()){
+                System.out.println(rs.getString(1));
+            }
+        }catch(SQLException e){
+            System.err.println(e.getMessage());
+        }
+        System.out.println();
+    }
+
+    private void addVideo(String path, String newName) throws SQLException{
+        if(this.category.getText() == null || this.category.getText().isEmpty()){
+            model.Videos.addVideo(newName, path, "default");
+        }else{
+            model.Videos.addVideo(newName, path, category.getText());
+        }
     }
 
     @FXML
@@ -107,13 +117,50 @@ public class AddVideoController {
         }
     }
 
-    public static boolean isValidPath(String path) {
-        try {
-            Paths.get(path);
-        } catch (InvalidPathException | NullPointerException ex) {
+    private static boolean isNameValid(String name){
+        if(name != null && !name.isEmpty() && !name.isBlank()){
+            try {
+                ResultSet rs = getAllVideoNames.executeQuery();
+                while(rs.next()){
+                    if(rs.getString(1).equals(name)){
+                        return false;
+                    }
+                }    
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
+            return true;
+        }else{
             return false;
         }
+        
+    }
+
+    private static boolean isPathValid(String path) {
+        if(path == null || path.isEmpty() || path.isBlank()){
+            return false;
+        }else{
+            try {
+                Paths.get(path); //TODO: mdr ça fait rien ça ptn
+            } catch (InvalidPathException | NullPointerException ex) {
+                return false;
+            }
+        }
         return true;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resources) {
+        fileName.setStyle("-fx-border-color: transparent");
+        newName.setStyle("-fx-border-color: transparent");
+
+        fileName.textProperty().addListener(((arg0, arg1, arg2) -> {
+            fileName.setStyle("-fx-border-color: transparent");
+        }));
+
+        newName.textProperty().addListener(((arg0, arg1, arg2) -> {
+            newName.setStyle("-fx-border-color: transparent");
+        }));
     }
     
 }

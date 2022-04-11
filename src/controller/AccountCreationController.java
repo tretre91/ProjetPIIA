@@ -58,6 +58,9 @@ public class AccountCreationController implements Initializable {
         } else {
             try {
                 if (Users.createUser(new User(ident.getText(), assignStatus(), null), mdp1.getText())) {
+                    ident.setText(null);
+                    mdp1.setText(null);
+                    mdp2.setText(null);
                     return 0;
                 }
             } catch (SQLException e) {

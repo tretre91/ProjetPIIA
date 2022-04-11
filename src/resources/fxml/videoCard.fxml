@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.VBox?>
+
+
+<Button contentDisplay="TOP" mnemonicParsing="false" text="&lt;video_name&gt;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <graphic>
+      <VBox prefHeight="200.0" prefWidth="100.0" />
+   </graphic>
+</Button>

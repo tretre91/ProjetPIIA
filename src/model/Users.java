@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 
+import controller.State;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +15,7 @@ public abstract class Users {
     private static PreparedStatement getUsersStatement;
     private static PreparedStatement checkPasswordStatement;
     private static PreparedStatement createUserStatement;
+    private static PreparedStatement getCategoriesStatement;
 
     static {
         if (Database.isValid() || Database.open()) {
@@ -22,7 +25,7 @@ public abstract class Users {
                         .prepareStatement("SELECT name, status, avatar FROM user WHERE name = ? AND password = ?");
                 createUserStatement = Database.prepareStatement(
                         "INSERT OR ABORT INTO user(name, password, status, avatar) VALUES (?, ?, ?, ?)");
-
+                getCategoriesStatement = Database.prepareStatement("SELECT name, status FROM category WHERE status >= ?");
                 createUser(new User("admin", Status.ADMIN, null), "admin");
             } catch (SQLException e) {
                 System.err.printf("ERROR: failure in Users class initialization (%s)\n", e.getMessage());
@@ -99,5 +102,20 @@ public abstract class Users {
         rs.close();
         checkPasswordStatement.clearParameters();
         return result;
+    }
+
+    public static ArrayList<Category> getCategoriesbyUser(String user) {
+        ArrayList<Category> categories = new ArrayList<>();
+        try {
+            getCategoriesStatement.setInt(1, State.getCurrentStatus().getValue());
+            ResultSet rs = getCategoriesStatement.executeQuery();
+            while (rs.next()) {
+                categories.add(new Category(rs.getString(1), rs.getInt(2)));
+            }
+            return categories;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }
