@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,9 +11,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
 import model.*;
 import view.Page;
 import view.View;
@@ -21,9 +26,6 @@ import model.Category;
 public class LibraryController implements Initializable{
     @FXML private VBox frame;
 
-    //TODO: add as many scrollPanes as there are category for this account,
-    //in each scrollPane show the videos from the corresponding category
-
     @FXML
     private void goBack(){
         //TODO: à maj plus tard
@@ -31,8 +33,21 @@ public class LibraryController implements Initializable{
     }
 
     @FXML
-    private void launchVideo(){
-        //TODO:
+    private void launchVideo(String name, String path) throws IOException{
+        Scene scene = new Scene(new Pane());
+        State.getStage().setScene(scene);
+        State.getStage().setTitle(name);
+        System.out.println("Path : " + path);
+        
+        Media media = new Media(new File(path).toURI().toURL().toString());
+
+        FXMLLoader loader = new FXMLLoader();
+        loader.setController(new Player(media, scene));
+        loader.setLocation(getClass().getResource(Page.VIDEO.getFilename()));
+        StackPane root = loader.load();
+        scene.setRoot(root);
+
+        State.getStage().show();
     }
 
     @FXML
@@ -63,6 +78,11 @@ public class LibraryController implements Initializable{
                         @Override
                         public void handle(ActionEvent e) {
                             //TODO:
+                            try {
+                                launchVideo(v.name, v.path);
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
                             System.out.println(thumbnail.getText());
                         }
                     });

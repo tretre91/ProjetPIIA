@@ -13,7 +13,8 @@ public enum Page {
     MANAGE_CATEGORIES("manageCategories.fxml"),
     LIBRARY("library.fxml"),
     ADD_CATEGORY("addCategory.fxml"),
-    ADD_VIDEO("addVideo.fxml");
+    ADD_VIDEO("addVideo.fxml"),
+    VIDEO("video.fxml");
 
     private final String filename;
 
