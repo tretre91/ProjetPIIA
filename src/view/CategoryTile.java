@@ -2,12 +2,25 @@ package view;
 
 import model.Status;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.naming.spi.DirStateFactory.Result;
+
+import controller.ManageCategoriesController;
+import controller.State;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import model.Category;
+import model.Database;
 
 /**
  * Classe pour représenter les tuiles de caétgories dans la page de gestion des

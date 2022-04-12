@@ -30,7 +30,7 @@
          <children>
             <HBox alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);" VBox.vgrow="NEVER">
                <children>
-                  <Text fx:id="title" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Video name" textAlignment="CENTER">
+                  <Text fx:id="title" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER">
                      <font>
                         <Font name="Lato Regular" size="14.0" />
                      </font></Text>

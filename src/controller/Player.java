@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 import java.net.URL;
 import java.time.Instant;
@@ -6,19 +6,26 @@ import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.util.Duration;
+import view.View;
 
-public class Player implements Initializable {
+public class Player implements Initializable{
     @FXML
     private MediaView mediaView;
     @FXML
@@ -94,6 +101,23 @@ public class Player implements Initializable {
             }
         });
 
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e) {
+                switch(e.getCode()){
+                    case ESCAPE:
+                        exit();
+                        break;
+                    case UP:
+                    //player.setAudioSpectrumInterval(arg0);
+                    break;
+                    case DOWN:
+                    break;
+                    default:
+                    break;                }
+            }
+        });
+
         overlayHider.setDaemon(true);
         overlayHider.start();
     }
@@ -139,4 +163,13 @@ public class Player implements Initializable {
         }
     }
 
+    private void exit(){
+        player.stop();
+        Scene scene = new Scene(new Pane());
+        scene.getStylesheets().add("/resources/css/categoryTile.css");
+        State.getStage().setScene(scene);
+        State.getStage().setTitle("Homework Folder Manager");
+        View.setScene(scene);
+        View.switchPage(view.Page.LIBRARY);
+    }
 }

@@ -32,9 +32,10 @@ public class AddVideoController implements Initializable{
     @FXML private TextField category; //TODO: mettre le bon type
 
     @FXML private TextField fileName; //le texfield où on rentre le nom du fichier
-    @FXML private File selectedFile; //le fichier sélectionné via parcousr
 
     @FXML private TextField newName; //le nom de la vidéo dans le système
+
+    private File selectedFile; //le fichier sélectionné via parcours
     
     @FXML
     private void goBack(){
@@ -54,8 +55,9 @@ public class AddVideoController implements Initializable{
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Vidéos", "*.mp4", "*.mov"));
         
-        selectedFile = fileChooser.showOpenDialog(State.getStage());
-        if(selectedFile != null){
+        File tmpFile = fileChooser.showOpenDialog(State.getStage());
+        if(tmpFile != null){
+            selectedFile = tmpFile;
             fileName.setText(selectedFile.getName());
         }else{
             setErrorStyle(fileName);
