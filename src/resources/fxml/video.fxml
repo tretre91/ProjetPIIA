@@ -37,14 +37,19 @@
                </children>
             </HBox>
             <Pane onMouseClicked="#togglePlayback" VBox.vgrow="ALWAYS" />
-            <HBox VBox.vgrow="NEVER">
+            <HBox alignment="BOTTOM_LEFT" fillHeight="false" VBox.vgrow="NEVER">
                <children>
-                  <Button fx:id="playButton" mnemonicParsing="false" onMouseClicked="#togglePlayback" text="Play/Pause">
+                  <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#togglePlayback" text="Play/Pause">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </Button>
-                  <Slider fx:id="slider" onMouseClicked="#seek" onMousePressed="#startDrag" onMouseReleased="#endDrag" HBox.hgrow="ALWAYS">
+                  <Slider fx:id="volume" blockIncrement="5.0" focusTraversable="false" onMousePressed="#startDrag" onMouseReleased="#endDrag" orientation="VERTICAL" value="75.0">
+                     <padding>
+                        <Insets bottom="6.0" />
+                     </padding>
+                  </Slider>
+                  <Slider fx:id="slider" focusTraversable="false" onMouseClicked="#seek" onMousePressed="#startDrag" onMouseReleased="#endDrag" prefHeight="16.0" prefWidth="455.0" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>

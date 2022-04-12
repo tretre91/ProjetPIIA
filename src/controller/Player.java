@@ -34,6 +34,8 @@ public class Player implements Initializable{
     private Slider slider;
     @FXML
     private VBox overlay;
+    @FXML
+    private Slider volume;
 
     private boolean paused = true;
     private boolean dragging = false;
@@ -57,7 +59,9 @@ public class Player implements Initializable{
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         mediaView.setMediaPlayer(player);
-        overlay.setVisible(false);
+        //overlay.setVisible(false);
+        overlay.setVisible(true);
+        overlay.setOpacity(0);
         player.setOnReady(() -> setup());
     }
 
@@ -81,17 +85,24 @@ public class Player implements Initializable{
             }
         });
 
+        volume.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(dragging){
+                player.setVolume(newValue.doubleValue()/100.);
+            }
+        });
+
         Thread overlayHider = new Thread(() -> {
             while (true) {
                 overlayLock.lock();
                 try {
-                    if (overlayShown && Instant.now().toEpochMilli() - overlayTimestamp > 2000) {
+                    if (overlayShown && Instant.now().toEpochMilli() - overlayTimestamp > 2000 && !dragging){
                         overlayShown = false;
                         scene.setCursor(Cursor.NONE);
-                        overlay.setVisible(false);
+                        //overlay.setVisible(false);
+                        overlay.setOpacity(0);
                     }
                 } finally {
-                    overlayLock.unlock();
+                overlayLock.unlock();
                 }
                 try {
                     Thread.sleep(100);
@@ -101,26 +112,51 @@ public class Player implements Initializable{
             }
         });
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e) {
-                switch(e.getCode()){
-                    case ESCAPE:
-                        exit();
-                        break;
-                    case UP:
-                    //player.setAudioSpectrumInterval(arg0);
-                    break;
-                    case DOWN:
-                    break;
-                    default:
-                    break;                }
-            }
-        });
+        scene.setOnKeyPressed(eventManager);
+        overlay.setOnKeyPressed(eventManager);
 
         overlayHider.setDaemon(true);
         overlayHider.start();
     }
+
+    EventHandler<KeyEvent> eventManager = new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent e) {
+            System.out.println(e.getCode().toString());
+            overlayShown = true;
+            //overlay.setVisible(true);
+            overlay.setOpacity(1);
+            overlayTimestamp = Instant.now().toEpochMilli();
+            switch(e.getCode()){
+                case ESCAPE:
+                    exit();
+                    break;
+                case UP:
+                    volume.increment();
+                    player.setVolume(volume.getValue()/100.);
+                    System.out.println(volume.getValue());
+                    break;
+                case DOWN:
+                    volume.decrement();
+                    System.out.println(volume.getValue());
+                    player.setVolume(volume.getValue()/100.);
+                    break;
+                case SPACE:
+                    togglePlayback();
+                    break;
+                case RIGHT:
+                    slider.increment();
+                    player.seek(Duration.seconds(slider.getValue()));
+                break;
+                case LEFT:
+                    slider.decrement();
+                    player.seek(Duration.seconds(slider.getValue()));
+                break;
+                default:
+                break;                
+            }
+        }
+    };
 
     @FXML
     private void togglePlayback() {
@@ -155,7 +191,8 @@ public class Player implements Initializable{
         overlayLock.lock();
         try {
             scene.setCursor(Cursor.DEFAULT);
-            overlay.setVisible(true);
+            //overlay.setVisible(true);
+            overlay.setOpacity(1);
             overlayShown = true;
             overlayTimestamp = Instant.now().toEpochMilli();
         } finally {
@@ -163,6 +200,7 @@ public class Player implements Initializable{
         }
     }
 
+    //méthode appelé quand on appuie sur escape
     private void exit(){
         player.stop();
         Scene scene = new Scene(new Pane());
