@@ -28,8 +28,8 @@ import view.View;
 import model.Category;
 
 public class LibraryController implements Initializable{
-    @FXML private ScrollPane frame;
-    @FXML private VBox mainVBox; //contient les labels et les catégories (les videoList)
+    @FXML 
+    private VBox mainVBox; //contient les labels et les catégories (les videoList)
 
     @FXML
     private void goBack(){
@@ -51,11 +51,9 @@ public class LibraryController implements Initializable{
     @Override
     public void initialize(URL url, ResourceBundle resources){
         ArrayList<Category> categorylist = Users.getCategoriesbyUser(State.getCurrentUser().getName());
-        mainVBox.setPrefWidth(State.getStage().getWidth() - 100);
         for(int i = 0; i < categorylist.size(); i++){
             VideoList liste = new VideoList(categorylist.get(i));
             mainVBox.getChildren().add(liste);
-            VBox.setVgrow(mainVBox.getChildren().get(i), Priority.ALWAYS);
         }
     }
 }

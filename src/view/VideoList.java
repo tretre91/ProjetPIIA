@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.effect.FloatMap;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -29,31 +30,37 @@ import model.Category;
 import model.Video;
 import model.Videos;
 
-public class VideoList extends VBox{
+public class VideoList extends VBox implements Initializable{
+    private String label;
+    private Category categorie;
+
+    @FXML
     private Label name;
-    private HBox liste = new HBox();
+    
+    @FXML
+    private HBox liste;
 
     public VideoList(Category categorie){
-        this.setSpacing(5);
-        liste.setMaxWidth(State.getStage().getWidth() - 100);
+        this.label = categorie.name;
+        this.categorie = categorie;
+        FXMLLoader loader = new FXMLLoader(View.class.getResource("/resources/fxml/categoryPane.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
+
+        try{
+            loader.load();
+        }catch(IOException e){
+            throw new RuntimeException("Failed to load category pane : " + categorie.name);
+        }
         
-        //liste.setPrefHeight(110);
-        liste.setSpacing(10);
-        liste.setFillHeight(true);
-        name = new Label(categorie.name);
-        this.getChildren().add(name);
-        ScrollPane scrollpane = new ScrollPane();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        name.setText(this.label);
         for (Video v : Videos.getVideosByCategory(categorie.name)) {
             //TODO: link à la miniature de la vidéo, set un évènement sur le bouton qui lance la vidéo
-            Miniature thumbnail = new Miniature(v);
-            liste.getChildren().add(thumbnail); //ajoute le bouton à la HBox
+            liste.getChildren().add(new Miniature(v)); //ajoute le bouton à la HBox
         }
-        //scrollpane.setVbarPolicy(ScrollBarPolicy.NEVER);
-        scrollpane.setContent(liste);
-        scrollpane.setPrefHeight(Miniature.HEIGHT);
-        //scrollpane.setVmax(arg0);
-        VBox.setVgrow(this, Priority.ALWAYS);
-        this.prefHeight(Miniature.HEIGHT);
-        this.getChildren().add(scrollpane);
     }
 }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="108.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="model.VideoList">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="108.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.VideoList">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -17,7 +17,7 @@
   </rowConstraints>
    <children>
       <Label fx:id="name" text="Label" />
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" GridPane.rowIndex="1">
+      <ScrollPane fitToHeight="true" prefHeight="200.0" prefWidth="200.0" vbarPolicy="NEVER" GridPane.rowIndex="1">
          <content>
             <HBox fx:id="liste" prefHeight="69.0" prefWidth="581.0" />
          </content>

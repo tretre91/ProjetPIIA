@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
@@ -11,7 +12,9 @@ import controller.Player;
 import controller.State;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,47 +26,42 @@ import javafx.scene.media.Media;
 import model.Video; 
 
 
-public class Miniature extends Button{
-    public static final int HEIGHT = 180;
-    public static final int WIDTH = 100;
-    public BufferedImage thumbnail;
+public class Miniature extends Button implements Initializable{
+    private Video v;
 
     public Miniature(Video v){
-        VBox box = new VBox();
-        box.setPrefSize(WIDTH, HEIGHT);
-        box.setFillWidth(true);
-        box.getChildren().add(0, new Label(v.name));
+        this.v = v;
+        FXMLLoader loader = new FXMLLoader(View.class.getResource("/resources/fxml/videoCard.fxml"));
+        loader.setRoot(this);
+        loader.setController(this);
 
-        //box.getChildren().add(new ImageView(v.path.get));
-        this.getChildren().add(box);
-        this.setPrefSize(WIDTH, HEIGHT);
-        this.setText(v.name); //set le nom de la vidéo
-        this.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) { //défini l'event on click
-                try {
-                    launchVideo(v.path, v.name);
-                } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-            }
-        });
+        try{
+            loader.load();
+        }catch(IOException e){
+            throw new RuntimeException("Failed to load a videoCard : " + v.path);
+        }
     }
 
-    private void launchVideo(String path, String name) throws IOException{
+    @FXML
+    private void launchVideo() throws IOException{
         //j'aimerais bien switchpage, mais c'est complexe (ici) de définir le contrôleur via SceneBuilder
         //du coup je peux pas faire un switchpage
-        System.out.println("Path : " + path);
+        System.out.println("Path : " + v.path);
         Scene scene = new Scene(new Pane());
         State.getStage().setScene(scene);
-        State.getStage().setTitle(name);
+        State.getStage().setTitle(v.name);
         
-        Media media = new Media(new File(path).toURI().toURL().toString());
+        Media media = new Media(new File(v.path).toURI().toURL().toString());
         FXMLLoader loader = new FXMLLoader();
         loader.setController(new Player(media, scene));
         loader.setLocation(getClass().getResource(Page.VIDEO.getFilename()));
         Parent root = loader.load();
         scene.setRoot(root);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.setText(v.name);
+        
     }
 }
