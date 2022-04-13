@@ -34,10 +34,10 @@ public class VideoList extends GridPane {
     private String label;
     private Category categorie;
 
-    
+    @FXML
     private Label name = new Label();
     
-    
+    @FXML
     private HBox liste = new HBox();
 
     public VideoList(Category categorie){
