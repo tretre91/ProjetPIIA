@@ -26,10 +26,11 @@ import javafx.scene.media.Media;
 import model.Video; 
 
 
-public class Miniature extends Button implements Initializable{
+public class Miniature extends Button {
     private Video v;
 
     public Miniature(Video v){
+        super();
         this.v = v;
         FXMLLoader loader = new FXMLLoader(View.class.getResource("/resources/fxml/videoCard.fxml"));
         loader.setRoot(this);
@@ -59,8 +60,8 @@ public class Miniature extends Button implements Initializable{
         scene.setRoot(root);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    
+    public void initialize() {
         this.setText(v.name);
         
     }

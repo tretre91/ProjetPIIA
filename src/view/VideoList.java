@@ -30,33 +30,35 @@ import model.Category;
 import model.Video;
 import model.Videos;
 
-public class VideoList extends VBox implements Initializable{
+public class VideoList extends GridPane {
     private String label;
     private Category categorie;
 
-    @FXML
-    private Label name;
     
-    @FXML
-    private HBox liste;
+    private Label name = new Label();
+    
+    
+    private HBox liste = new HBox();
 
     public VideoList(Category categorie){
+        super();
         this.label = categorie.name;
         this.categorie = categorie;
-        FXMLLoader loader = new FXMLLoader(View.class.getResource("/resources/fxml/categoryPane.fxml"));
+        FXMLLoader loader = new FXMLLoader(VideoList.class.getResource("/resources/fxml/categoryPane.fxml"));
         loader.setRoot(this);
         loader.setController(this);
 
         try{
             loader.load();
         }catch(IOException e){
-            throw new RuntimeException("Failed to load category pane : " + categorie.name);
+            System.err.println(e.getLocalizedMessage());
+            e.printStackTrace();
+            // throw new RuntimeException("Failed to load category pane : " + categorie.name);
         }
         
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize() {
         name.setText(this.label);
         for (Video v : Videos.getVideosByCategory(categorie.name)) {
             //TODO: link à la miniature de la vidéo, set un évènement sur le bouton qui lance la vidéo
