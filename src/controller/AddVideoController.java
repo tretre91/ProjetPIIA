@@ -2,16 +2,15 @@ package controller;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import org.tretre91.controls.ErrorTextField;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -20,21 +19,15 @@ import view.Page;
 import view.View;
 
 public class AddVideoController implements Initializable{
-    static PreparedStatement getAllVideoNames;
-    static{
-        try{
-            getAllVideoNames = Database.prepareStatement("SELECT name FROM video");
-        }catch(SQLException e){
-            System.err.println(e.getMessage());
-        }
-    }
+    static File userHome = new File(System.getProperty("user.home"));
+    static File lastLocation = userHome; // dossier du dernier fichier choisi par l'utilisateur
     
     @FXML private TextField category; //TODO: mettre le bon type
 
-    @FXML private TextField fileName; //le texfield où on rentre le nom du fichier
+    @FXML private ErrorTextField fileName; //le texfield où on rentre le nom du fichier
     @FXML private File selectedFile; //le fichier sélectionné via parcousr
 
-    @FXML private TextField newName; //le nom de la vidéo dans le système
+    @FXML private ErrorTextField newName; //le nom de la vidéo dans le système
     
     @FXML
     private void goBack(){
@@ -42,42 +35,37 @@ public class AddVideoController implements Initializable{
     }
 
     @FXML
-    private void setErrorStyle(Node n){
-        n.setStyle("-fx-border-color: red");
-    }
-
-    @FXML
     private void selectFile(){
+        if (!lastLocation.exists()) {
+            lastLocation = userHome;
+        }
+        
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(lastLocation);
         fileChooser.setTitle("Sélectionner une vidéo");
         fileChooser.getExtensionFilters().addAll(
                 new ExtensionFilter("Vidéos", "*.mp4", "*.mov"));
         
         selectedFile = fileChooser.showOpenDialog(State.getStage());
         if(selectedFile != null){
-            fileName.setText(selectedFile.getName());
-        }else{
-            setErrorStyle(fileName);
+            lastLocation = selectedFile.getParentFile();
+            fileName.setText(selectedFile.getAbsolutePath());
+            if (newName.getText().isEmpty()) {
+                newName.setText(formatFileName(fileName.getText()));
+            }
+        }else if (fileName.getText().isEmpty()) {
+            fileName.setError("Aucun fichier sélectionné");
         }
     }
 
     @FXML
-    private void tryAjouter() throws SQLException{
-        String fileNameFormatté = formatFileName(fileName.getText());
-        
+    private void tryAjouter() throws SQLException{  
         if(isPathValid(fileName.getText())){
-            if(isNameValid(newName.getText())){
-                addVideo(selectedFile.getAbsolutePath(), newName.getText());
-            }else if(isNameValid(fileNameFormatté)){
-                addVideo(selectedFile.getAbsolutePath(), fileNameFormatté);
-            }else{
-                setErrorStyle(newName);
-                //afficher une erreur dédiée
+            if(!addVideo(selectedFile.getAbsolutePath(), newName.getText())) {
+                newName.setError("Une vidéo avec le même nom existe déjà");
             }
         }else{
-            setErrorStyle(fileName);
-            //afficher une erreur dédiée
+            fileName.setError("Le fichier spécifié n'existe pas");
         }
     }
 
@@ -96,71 +84,32 @@ public class AddVideoController implements Initializable{
         System.out.println();
     }
 
-    private void addVideo(String path, String newName) throws SQLException{
+    private boolean addVideo(String path, String newName) throws SQLException{
         if(this.category.getText() == null || this.category.getText().isEmpty()){
-            model.Videos.addVideo(newName, path, "default");
+            return model.Videos.addVideo(newName, path, "default");
         }else{
-            model.Videos.addVideo(newName, path, category.getText());
+            return model.Videos.addVideo(newName, path, category.getText());
         }
     }
 
+    /**
+     * Récupère le nom d'un fichier sans son extension
+     * @param s Le chemin vers le fichier
+     * @return Le nom du fichier
+     */
     @FXML
     private String formatFileName(String s){
-        try {
-            if(s == null || s.isEmpty()){
-                return null;
-            }else{
-                return s.split(".mp4")[0];
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private static boolean isNameValid(String name){
-        if(name != null && !name.isEmpty() && !name.isBlank()){
-            try {
-                ResultSet rs = getAllVideoNames.executeQuery();
-                while(rs.next()){
-                    if(rs.getString(1).equals(name)){
-                        return false;
-                    }
-                }    
-            } catch (SQLException e) {
-                System.err.println(e.getMessage());
-            }
-            return true;
-        }else{
-            return false;
-        }
-        
+        String file = new File(s).getName();
+        return file.substring(0, file.lastIndexOf("."));
     }
 
     private static boolean isPathValid(String path) {
-        if(path == null || path.isEmpty() || path.isBlank()){
-            return false;
-        }else{
-            try {
-                Paths.get(path); //TODO: mdr ça fait rien ça ptn
-            } catch (InvalidPathException | NullPointerException ex) {
-                return false;
-            }
-        }
-        return true;
+        return path != null && (new File(path).exists());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resources) {
-        fileName.setStyle("-fx-border-color: transparent");
-        newName.setStyle("-fx-border-color: transparent");
 
-        fileName.textProperty().addListener(((arg0, arg1, arg2) -> {
-            fileName.setStyle("-fx-border-color: transparent");
-        }));
-
-        newName.textProperty().addListener(((arg0, arg1, arg2) -> {
-            newName.setStyle("-fx-border-color: transparent");
-        }));
     }
     
 }

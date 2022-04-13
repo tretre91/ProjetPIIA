@@ -43,6 +43,7 @@ public abstract class View {
         } catch (IOException e) {
             System.err.println("ERROR: failed to load fxml file " + page.getFilename());
             e.printStackTrace();
+            e.getCause().printStackTrace();
         }
     }
 
