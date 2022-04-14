@@ -31,6 +31,12 @@ public abstract class Videos {
 
     private static PreparedStatement getVideoIdStatement;
     private static PreparedStatement getCategoryIdStatement;
+    private static PreparedStatement getUserIdStatement;
+
+    private static PreparedStatement addAuthorizationStatement;
+    private static PreparedStatement removeAuthorizationStatement;
+    private static PreparedStatement getAuthorizedVideos;
+    private static PreparedStatement getAuthorizedVideosT; // vidéos avec miniature
 
     static {
         if (Database.isValid() || Database.open()) {
@@ -48,8 +54,15 @@ public abstract class Videos {
                 getVideosByCategoryStatement = Database.prepareStatement("SELECT video.name, video.path FROM video WHERE idc = ?");
                 getVideosByCategoryTStatement = Database
                         .prepareStatement("SELECT video.name, video.path, video.thumbnail FROM video WHERE idc = ?");
+
                 getVideoIdStatement = Database.prepareStatement("SELECT idv FROM video WHERE name = ?");
                 getCategoryIdStatement = Database.prepareStatement("SELECT idc FROM category WHERE name = ?");
+                getUserIdStatement = Database.prepareStatement("SELECT idu FROM user WHERE name = ?");
+
+                addAuthorizationStatement = Database.prepareStatement("INSERT INTO authorization VALUES (?, ?)");
+                removeAuthorizationStatement = Database.prepareStatement("DELETE FROM authorization WHERE idu = ? AND idv = ?");
+                getAuthorizedVideos = Database.prepareStatement("SELECT name, path FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
+                getAuthorizedVideosT = Database.prepareStatement("SELECT name, path, thumbnail FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
 
                 Statement statement = Database.createStatement();
                 String addDefaultCategory = String.format(
@@ -285,6 +298,94 @@ public abstract class Videos {
     }
 
     /**
+     * Ajoute l'autorisation d'une vidéo en particulier à un utilisateur
+     * 
+     * @param user
+     *            L'utilisateur
+     * @param videoName
+     *            Le nom de la vidéo
+     * @return true si l'autorisation a été créée
+     */
+    public static boolean addAuthorization(String user, String videoName) {
+        try {
+            Integer idu = getUserId(user);
+            Integer idv = getVideoId(videoName);
+
+            if (idu != null && idv != null) {
+                addAuthorizationStatement.setInt(1, idu);
+                addAuthorizationStatement.setInt(2, idv);
+                return addAuthorizationStatement.executeUpdate() == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
+    }
+
+    /**
+     * Retire l'autorisation d'une vidéo en particulier à un utilisateur
+     * 
+     * @param user
+     *            L'utilisateur
+     * @param videoName
+     *            Le nom de la vidéo
+     * @return true si l'autorisation a été retirée
+     */
+    public static boolean removeAuthorization(String user, String videoName) {
+        try {
+            Integer idu = getUserId(user);
+            Integer idv = getVideoId(videoName);
+
+            if (idu != null && idv != null) {
+                removeAuthorizationStatement.setInt(1, idu);
+                removeAuthorizationStatement.setInt(2, idv);
+                return removeAuthorizationStatement.executeUpdate() == 1;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
+    }
+
+    public static ArrayList<Video> getAuthorizedVideos(String user) {
+        try {
+            Integer idu = getUserId(user);
+            
+            if (idu != null) {
+                ArrayList<Video> videos = new ArrayList<>();
+                getAuthorizedVideos.setInt(1, idu);
+                ResultSet rs = getAuthorizedVideos.executeQuery();
+                while (rs.next()) {
+                    videos.add(new Video(rs.getString(1), rs.getString(2), "Autres"));
+                }
+                return videos;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return null;
+    }
+
+    public static ArrayList<Video> getAuthorizedVideosWithThumbnails(String user) {
+        try {
+            Integer idu = getUserId(user);
+            
+            if (idu != null) {
+                ArrayList<Video> videos = new ArrayList<>();
+                getAuthorizedVideosT.setInt(1, idu);
+                ResultSet rs = getAuthorizedVideosT.executeQuery();
+                while (rs.next()) {
+                    videos.add(new Video(rs.getString(1), rs.getString(2), "Autres", new Image(rs.getBinaryStream(3))));
+                }
+                return videos;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return null;
+    }
+
+    /**
      * Recupère l'identifiant d'une catégorie à partir de son nom
      * 
      * @return l'identifiant, ou null si aucune catégorie avec ce titre existe
@@ -322,6 +423,22 @@ public abstract class Videos {
             return id;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    private static Integer getUserId(String name) {
+        try {
+            getUserIdStatement.setString(1, name);
+            ResultSet rs = getVideoIdStatement.executeQuery();
+            Integer id = null;
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+            rs.close();
+            return id;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
             return null;
         }
     }
