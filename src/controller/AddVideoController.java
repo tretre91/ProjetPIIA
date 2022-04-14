@@ -31,15 +31,22 @@ public class AddVideoController implements Initializable {
     static File userHome = new File(System.getProperty("user.home"));
     static File lastLocation = userHome; // dossier du dernier fichier choisi par l'utilisateur
 
-    @FXML private TextField category;
-    @FXML private ErrorTextField fileName; //le texfield où on rentre le nom du fichier
-    @FXML private File selectedFile; //le fichier sélectionné via parcours
+    @FXML
+    private TextField category;
+    @FXML
+    private ErrorTextField fileName; //le texfield où on rentre le nom du fichier
+    @FXML
+    private File selectedFile; //le fichier sélectionné via parcours
 
-    @FXML private ErrorTextField newName; //le nom de la vidéo dans le système
+    @FXML
+    private ErrorTextField newName; //le nom de la vidéo dans le système
 
-    @FXML private Label importLabel; // le label qui indique l'état de l'improt
-    @FXML private ProgressBar importProgress; // la barre de progression de l'import
-    @FXML private Button addButton;
+    @FXML
+    private Label importLabel; // le label qui indique l'état de l'improt
+    @FXML
+    private ProgressBar importProgress; // la barre de progression de l'import
+    @FXML
+    private Button addButton;
 
     /**
      * Classe utilisée pour importer la vidéo depuis un autre Thread
@@ -124,7 +131,8 @@ public class AddVideoController implements Initializable {
         try {
             File tmp = File.createTempFile("hfm", ".jpeg");
             String command = "ffmpeg -y -loglevel quiet -i " + path
-                    + " -ss 00:00:01  -vf scale=w=150:h=100:force_original_aspect_ratio=decrease -frames:v 1 " + tmp.getAbsolutePath();
+                    + " -ss 00:00:01  -vf \"scale=w=150:h=100:force_original_aspect_ratio=decrease,pad=150:100:-1:-1:color=black\" -frames:v 1 "
+                    + tmp.getAbsolutePath();
             Process proc = Runtime.getRuntime().exec(command);
             if (proc.waitFor() == 0) {
                 return tmp;
