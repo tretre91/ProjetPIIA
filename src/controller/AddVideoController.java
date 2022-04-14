@@ -185,9 +185,12 @@ public class AddVideoController implements Initializable {
                 }
             };
             timer.schedule(t, 2000);
+            
         });
 
-        new Thread(task).start();
+        Thread worker = new Thread(task);
+        worker.setDaemon(true);
+        worker.start();
     }
 
     @FXML

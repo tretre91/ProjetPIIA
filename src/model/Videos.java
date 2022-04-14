@@ -18,13 +18,17 @@ import javafx.scene.image.Image;
 public abstract class Videos {
     private static PreparedStatement addVideoStatement;
     private static PreparedStatement removeVideoStatement;
+    private static PreparedStatement updateVideoStatement;
     private static PreparedStatement setThumbnailStatement;
+
     private static PreparedStatement addCategoryStatement;
     private static PreparedStatement removeCategoryStatement;
     private static PreparedStatement renameCategoryStatement;
+
     private static PreparedStatement getCategoriesStatement;
     private static PreparedStatement getVideosByCategoryStatement;
     private static PreparedStatement getVideosByCategoryTStatement; // vidéos avec miniature
+
     private static PreparedStatement getVideoIdStatement;
     private static PreparedStatement getCategoryIdStatement;
 
@@ -33,6 +37,7 @@ public abstract class Videos {
             try {
                 addVideoStatement = Database.prepareStatement("INSERT OR ABORT INTO video(idc, name, path) VALUES (?, ?, ?)");
                 removeVideoStatement = Database.prepareStatement("DELETE FROM video WHERE name = ?");
+                updateVideoStatement = Database.prepareStatement("UPDATE OR IGNORE video SET name = ?, idc = ? WHERE name = ?");
                 setThumbnailStatement = Database.prepareStatement("UPDATE OR IGNORE video SET thumbnail = ? WHERE name = ?");
 
                 addCategoryStatement = Database.prepareStatement("INSERT OR ABORT INTO category(name, status) VALUES (?, ?)");
@@ -139,6 +144,26 @@ public abstract class Videos {
         try {
             removeVideoStatement.setString(1, name);
             return removeVideoStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
+    }
+
+    /**
+     * Mets à jour une vidéo
+     * 
+     * @return true si une vidéo a été modifiée, false sinon
+     */
+    public static boolean updateVideo(String oldName, String newName, String category) {
+        Integer idc = getCategoryId(category);
+        try {
+            if (idc != null) {
+                updateVideoStatement.setString(1, newName);
+                updateVideoStatement.setInt(2, idc);
+                updateVideoStatement.setString(3, oldName);
+                return updateVideoStatement.executeUpdate() == 1;
+            }
         } catch (SQLException e) {
             System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
         }

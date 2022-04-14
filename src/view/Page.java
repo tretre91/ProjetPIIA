@@ -14,6 +14,7 @@ public enum Page {
     LIBRARY("library.fxml"),
     ADD_CATEGORY("addCategory.fxml"),
     ADD_VIDEO("addVideo.fxml"),
+    EDIT_VIDEO("editVideo.fxml"),
     VIDEO("video.fxml");
 
     private final String filename;

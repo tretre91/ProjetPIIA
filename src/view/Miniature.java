@@ -10,10 +10,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
+import model.Status;
 import model.Video;
 
 public class Miniature extends Button {
@@ -57,5 +60,16 @@ public class Miniature extends Button {
     private void initialize() {
         name.setText(v.name);
         thumbnail.setImage(v.thumbnail);
+        if (!State.getCurrentStatus().lessThan(Status.PARENT)) {
+            ContextMenu menu = new ContextMenu();
+            MenuItem item = new MenuItem("éditer");
+            item.setOnAction(event -> {
+                State.setCurrentVideo(v);
+                View.pushPage();
+                View.switchPage(Page.EDIT_VIDEO);
+            });
+            menu.getItems().add(item);
+            this.setContextMenu(menu);
+        }
     }
 }
