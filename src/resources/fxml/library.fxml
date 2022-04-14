@@ -2,24 +2,40 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<ScrollPane fx:id="frame" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LibraryController">
-   <content>
-      <VBox fx:id="mainVBox" prefHeight="110.0" prefWidth="131.0" spacing="50.0">
-         <children>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LibraryController">
+   <children>
+      <Button cancelButton="true" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@../css/iconButton.css">
+         <graphic>
+            <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
+               <image>
+                  <Image url="@../icons/baseline_arrow_back_black_48dp.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Button>
+      <ScrollPane fx:id="frame" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hmax="0.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox fx:id="mainVBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="50.0">
                <children>
-                  <Button cancelButton="true" mnemonicParsing="false" onAction="#goBack" prefHeight="27.0" prefWidth="68.0" text="Retour" />
-                  <Button mnemonicParsing="false" onAction="#debugBD" prefHeight="28.0" prefWidth="70.0" text="Debug" />
+                  <Label alignment="CENTER" maxWidth="1.7976931348623157E308" text="Bibliothèque" textAlignment="CENTER">
+                     <font>
+                        <Font name="Lato Semibold" size="28.0" />
+                     </font>
+                  </Label>
                </children>
+               <padding>
+                  <Insets bottom="15.0" top="15.0" />
+               </padding>
             </VBox>
-         </children>
-         <padding>
-            <Insets left="40.0" />
-         </padding>
-      </VBox>
-   </content>
-</ScrollPane>
+         </content>
+      </ScrollPane>
+      <Button mnemonicParsing="false" onAction="#debugBD" prefHeight="28.0" prefWidth="70.0" text="Debug" />
+   </children>
+</VBox>

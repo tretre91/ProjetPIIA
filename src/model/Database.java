@@ -3,7 +3,6 @@ package model;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -118,7 +117,8 @@ public abstract class Database {
             + "  idv INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "  idc INTEGER REFERENCES category(idc) NOT NULL,"
             + "  name TEXT UNIQUE NOT NULL,"
-            + "  path TEXT NOT NULL)"
+            + "  path TEXT NOT NULL,"
+            + "  thumbnail BLOB DEFAULT(null))"
         );
 
         statement.executeUpdate(

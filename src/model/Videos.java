@@ -1,5 +1,7 @@
 package model;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,17 +10,21 @@ import java.util.ArrayList;
 
 import org.sqlite.SQLiteErrorCode;
 
+import javafx.scene.image.Image;
+
 /**
  * Classe abstraite offrant des fonctions pour la gestion des vidéos et catégories dans la base de données
  */
 public abstract class Videos {
     private static PreparedStatement addVideoStatement;
     private static PreparedStatement removeVideoStatement;
+    private static PreparedStatement setThumbnailStatement;
     private static PreparedStatement addCategoryStatement;
     private static PreparedStatement removeCategoryStatement;
     private static PreparedStatement renameCategoryStatement;
     private static PreparedStatement getCategoriesStatement;
     private static PreparedStatement getVideosByCategoryStatement;
+    private static PreparedStatement getVideosByCategoryTStatement; // vidéos avec miniature
     private static PreparedStatement getVideoIdStatement;
     private static PreparedStatement getCategoryIdStatement;
 
@@ -27,6 +33,7 @@ public abstract class Videos {
             try {
                 addVideoStatement = Database.prepareStatement("INSERT OR ABORT INTO video(idc, name, path) VALUES (?, ?, ?)");
                 removeVideoStatement = Database.prepareStatement("DELETE FROM video WHERE name = ?");
+                setThumbnailStatement = Database.prepareStatement("UPDATE OR IGNORE video SET thumbnail = ? WHERE name = ?");
 
                 addCategoryStatement = Database.prepareStatement("INSERT OR ABORT INTO category(name, status) VALUES (?, ?)");
                 removeCategoryStatement = Database.prepareStatement("DELETE FROM category WHERE name = ? AND name != 'default'");
@@ -34,6 +41,8 @@ public abstract class Videos {
 
                 getCategoriesStatement = Database.prepareStatement("SELECT name, status FROM category");
                 getVideosByCategoryStatement = Database.prepareStatement("SELECT video.name, video.path FROM video WHERE idc = ?");
+                getVideosByCategoryTStatement = Database
+                        .prepareStatement("SELECT video.name, video.path, video.thumbnail FROM video WHERE idc = ?");
                 getVideoIdStatement = Database.prepareStatement("SELECT idv FROM video WHERE name = ?");
                 getCategoryIdStatement = Database.prepareStatement("SELECT idc FROM category WHERE name = ?");
 
@@ -137,6 +146,26 @@ public abstract class Videos {
     }
 
     /**
+     * Mets à jour la miniature d'une vidéo
+     * 
+     * @param name
+     *            La vidéo à modifier
+     * @param data
+     *            Les données de la miniature
+     * @return true si la vidéo a été mise à jour, false en cas d'erreur
+     */
+    public static boolean setThumbnail(String name, InputStream data) {
+        try {
+            setThumbnailStatement.setBytes(1, data.readAllBytes());
+            setThumbnailStatement.setString(2, name);
+            return setThumbnailStatement.executeUpdate() == 1;
+        } catch (SQLException | IOException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
+    }
+
+    /**
      * Ajoute une nouvelle catégorie
      * 
      * @param name
@@ -179,7 +208,7 @@ public abstract class Videos {
     }
 
     /**
-     * Récupère les vidéos associées à une catégorie
+     * Récupère les vidéos associées à une catégorie sans leur miniature
      * 
      * @param category
      *            La catégorie en question
@@ -195,6 +224,32 @@ public abstract class Videos {
             videos = new ArrayList<>();
             while (rs.next()) {
                 videos.add(new Video(rs.getString(1), rs.getString(2), category));
+            }
+
+            return videos;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Récupère les vidéos associées à une catégorie avec leurs miniatures
+     * 
+     * @param category
+     *            La catégorie à récuperer
+     * @return La liste de vidéos qui ont cette catégorie
+     */
+    public static ArrayList<Video> getVideosByCategoryWithThumbnails(String category) {
+        ArrayList<Video> videos;
+        try {
+            Integer idc = getCategoryId(category);
+            getVideosByCategoryTStatement.setInt(1, idc);
+            ResultSet rs = getVideosByCategoryTStatement.executeQuery();
+
+            videos = new ArrayList<>();
+            while (rs.next()) {
+                videos.add(new Video(rs.getString(1), rs.getString(2), category, new Image(rs.getBinaryStream(3))));
             }
 
             return videos;
