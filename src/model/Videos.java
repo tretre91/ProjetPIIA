@@ -3,6 +3,7 @@ package model;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.sqlite.SQLiteErrorCode;
@@ -12,7 +13,10 @@ import org.sqlite.SQLiteErrorCode;
  */
 public abstract class Videos {
     private static PreparedStatement addVideoStatement;
+    private static PreparedStatement removeVideoStatement;
     private static PreparedStatement addCategoryStatement;
+    private static PreparedStatement removeCategoryStatement;
+    private static PreparedStatement renameCategoryStatement;
     private static PreparedStatement getCategoriesStatement;
     private static PreparedStatement getVideosByCategoryStatement;
     private static PreparedStatement getVideoIdStatement;
@@ -21,17 +25,34 @@ public abstract class Videos {
     static {
         if (Database.isValid() || Database.open()) {
             try {
-                addVideoStatement = Database
-                        .prepareStatement(
-                                "INSERT OR ABORT INTO video(idc, name, path) VALUES (?, ?, ?)");
+                addVideoStatement = Database.prepareStatement("INSERT OR ABORT INTO video(idc, name, path) VALUES (?, ?, ?)");
+                removeVideoStatement = Database.prepareStatement("DELETE FROM video WHERE name = ?");
+
+                addCategoryStatement = Database.prepareStatement("INSERT OR ABORT INTO category(name, status) VALUES (?, ?)");
+                removeCategoryStatement = Database.prepareStatement("DELETE FROM category WHERE name = ? AND name != 'default'");
+                renameCategoryStatement = Database.prepareStatement("UPDATE OR IGNORE category SET name = ? WHERE name = ?");
+
                 getCategoriesStatement = Database.prepareStatement("SELECT name, status FROM category");
-                getVideosByCategoryStatement = Database.prepareStatement(
-                        "SELECT video.name, video.path FROM video WHERE idc = ?");
-                addCategoryStatement = Database
-                        .prepareStatement("INSERT OR ABORT INTO category(name, status) VALUES (?, ?)");
+                getVideosByCategoryStatement = Database.prepareStatement("SELECT video.name, video.path FROM video WHERE idc = ?");
                 getVideoIdStatement = Database.prepareStatement("SELECT idv FROM video WHERE name = ?");
                 getCategoryIdStatement = Database.prepareStatement("SELECT idc FROM category WHERE name = ?");
-                addCategory("default", Status.CHILD);
+
+                Statement statement = Database.createStatement();
+                String addDefaultCategory = String.format(
+                        "INSERT OR IGNORE INTO category(name, status) VALUES ('default', %d) RETURNING idc", Status.CHILD.getValue());
+                ResultSet rs = statement.executeQuery(addDefaultCategory);
+
+                if (rs.next()) {
+                    // @formater:off
+                    statement.executeUpdate(
+                            "CREATE TRIGGER IF NOT EXISTS setToDefaultCategory BEFORE DELETE ON category FOR EACH ROW"
+                                    + "  BEGIN"
+                                    + "    UPDATE video SET idc = " + rs.getInt(1) + " WHERE idc = OLD.idc;"
+                                    + "  END");
+                    // @formater:on
+                }
+
+                statement.close();
             } catch (SQLException e) {
                 System.err.printf("ERROR: failure in Users class initialization (%s)\n", e.getMessage());
             }
@@ -42,18 +63,19 @@ public abstract class Videos {
      * Récupère la liste des catégories de l'application
      * 
      * @return La liste de toutes les catégories
-     * @throws SQLException
-     *             En cas d'erreur interne de la base de données
      */
-    public static ArrayList<Category> getCategories() throws SQLException {
+    public static ArrayList<Category> getCategories() {
         ArrayList<Category> categories = new ArrayList<>();
+        try {
+            ResultSet rs = getCategoriesStatement.executeQuery();
+            while (rs.next()) {
+                categories.add(new Category(rs.getString(1), rs.getInt(2)));
+            }
 
-        ResultSet rs = getCategoriesStatement.executeQuery();
-        while (rs.next()) {
-            categories.add(new Category(rs.getString(1), rs.getInt(2)));
+            rs.close();
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
         }
-
-        rs.close();
         return categories;
     }
 
@@ -75,7 +97,7 @@ public abstract class Videos {
             Integer idc = getCategoryId(category);
             System.out.println("\nCatégorie : " + category);
             //TODO: temporaire
-            if(idc == null){
+            if (idc == null) {
                 addCategory(category, Status.fromInt(0));
                 idc = getCategoryId(category);
             }
@@ -95,6 +117,23 @@ public abstract class Videos {
                 throw e;
             }
         }
+    }
+
+    /**
+     * Supprime une vidéo
+     * 
+     * @param name
+     *            Le nom de la vidéo à supprimer
+     * @return true si la vidéo a été supprimée, false sinon
+     */
+    public static boolean removeVideo(String name) {
+        try {
+            removeVideoStatement.setString(1, name);
+            return removeVideoStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
     }
 
     /**
@@ -120,6 +159,23 @@ public abstract class Videos {
             }
         }
         return true;
+    }
+
+    /**
+     * Supprime une catégorie
+     * 
+     * @param name
+     *            Le nom de la catégorie
+     * @return true si une catégorie a été supprimée, false sinon
+     */
+    public static boolean removeCategory(String name) {
+        try {
+            removeCategoryStatement.setString(1, name);
+            return removeCategoryStatement.executeUpdate() == 1;
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return false;
     }
 
     /**

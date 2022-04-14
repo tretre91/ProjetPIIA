@@ -27,7 +27,7 @@ public class Main extends Application {
             launch(args);
             Database.close();
         } else {
-            System.err.println("Echec de l'ouverture de la base de données");
+            throw new RuntimeException("Echec de l'ouverture de la base de données");
         }
     }
 }

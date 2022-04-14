@@ -98,67 +98,45 @@ public abstract class Database {
         return connection.createStatement();
     }
 
-    /**
-     * Vérifie qu'une table existe dans la base de données
-     * 
-     * @param table
-     *            le nom de la table à chercher
-     * @return true si la table existe, false sinon
-     * @throws SQLException
-     */
-    private static boolean checkTable(String table) throws SQLException {
-        tableExistsStatement.setString(1, table);
-        ResultSet rs = tableExistsStatement.executeQuery();
-
-        boolean exists = rs.next();
-        rs.close();
-        tableExistsStatement.clearParameters();
-
-        return exists;
-    }
-
     private static void initialize() throws SQLException {
-        // si la table authorization n'existe pas, on considère que la base de donnée n'a pas été initialisée
-        if (!checkTable("authorization")) {
-            Statement statement = connection.createStatement();
+        Statement statement = connection.createStatement();
 
-            // @formatter:off
+        // @formatter:off
 
-            statement.executeUpdate(
-                  "CREATE TABLE IF NOT EXISTS user ("
-                + "  idu INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "  name TEXT UNIQUE NOT NULL,"
-                + "  password TEXT NOT NULL,"
-                + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3),"
-                + "  avatar TEXT,"
-                + "  CHECK (password NOT LIKE '' OR status = 3))"
-            );
+        statement.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS user ("
+            + "  idu INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "  name TEXT UNIQUE NOT NULL,"
+            + "  password TEXT NOT NULL,"
+            + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3),"
+            + "  avatar TEXT,"
+            + "  CHECK (password NOT LIKE '' OR status = 3))"
+        );
 
-            statement.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS video ("
-                + "  idv INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "  idc INTEGER REFERENCES category(idc) NOT NULL,"
-                + "  name TEXT UNIQUE NOT NULL,"
-                + "  path TEXT NOT NULL)"
-            );
+        statement.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS video ("
+            + "  idv INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "  idc INTEGER REFERENCES category(idc) NOT NULL,"
+            + "  name TEXT UNIQUE NOT NULL,"
+            + "  path TEXT NOT NULL)"
+        );
 
-            statement.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS category ("
-                + "  idc INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "  name TEXT UNIQUE NOT NULL,"
-                + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3))"
-            );
+        statement.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS category ("
+            + "  idc INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + "  name TEXT UNIQUE NOT NULL,"
+            + "  status INTEGER NOT NULL CHECK (0 <= status AND status <= 3))"
+        );
 
-            statement.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS authorization ("
-                + "  idu INTEGER REFERENCES user(idu) ON DELETE CASCADE NOT NULL,"
-                + "  idv INTEGER REFERENCES video(idv) ON DELETE CASCADE NOT NULL,"
-                + "  UNIQUE (idu, idv))"
-            );
-            
-            // @formatter:on
+        statement.executeUpdate(
+            "CREATE TABLE IF NOT EXISTS authorization ("
+            + "  idu INTEGER REFERENCES user(idu) ON DELETE CASCADE NOT NULL,"
+            + "  idv INTEGER REFERENCES video(idv) ON DELETE CASCADE NOT NULL,"
+            + "  UNIQUE (idu, idv))"
+        );
+        
+        // @formatter:on
 
-            statement.close();
-        }
+        statement.close();
     }
 }
