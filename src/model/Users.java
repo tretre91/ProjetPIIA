@@ -27,6 +27,7 @@ public abstract class Users {
                         "INSERT OR ABORT INTO user(name, password, status, avatar) VALUES (?, ?, ?, ?)");
                 getCategoriesStatement = Database.prepareStatement("SELECT name, status FROM category WHERE status >= ?");
                 createUser(new User("admin", Status.ADMIN, null), "admin");
+                createUser(new User("invité", Status.CHILD, null), "");
             } catch (SQLException e) {
                 System.err.printf("ERROR: failure in Users class initialization (%s)\n", e.getMessage());
             }

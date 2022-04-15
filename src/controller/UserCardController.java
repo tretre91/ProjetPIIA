@@ -1,6 +1,8 @@
 package controller;
 
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
@@ -8,6 +10,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import model.Database;
+import model.Status;
+import model.User;
+import model.Users;
 import view.View;
 import view.Page;
 
@@ -32,7 +38,18 @@ public class UserCardController implements Initializable {
     @FXML
     private void goToLogin() {
         State.setCurrentUser(username.getText());
-        View.switchPage(Page.LOGIN);
+        if(username.getText().equals("invité")){
+            View.switchPage(Page.ACCOUNT_HOME);
+            try {
+                User user = Users.checkPassword(username.getText(), "");
+                State.setCurrentUser(user); //mise à jour de l'utilisateur actuel
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }else{
+            View.switchPage(Page.LOGIN);
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
 import model.Category;
+import model.Status;
 import model.Users;
 import model.Video;
 import model.Videos;
@@ -22,7 +23,11 @@ public class LibraryController implements Initializable{
     @FXML
     private void goBack(){
         //TODO: à maj plus tard
-        View.switchPage(Page.ACCOUNT_HOME_PRIVILEGED);
+        if(State.getCurrentStatus().lessThan(Status.PARENT)){
+            View.switchPage(Page.ACCOUNT_HOME);
+        }else{
+            View.switchPage(Page.ACCOUNT_HOME_PRIVILEGED);
+        }
     }
 
     @FXML
@@ -38,6 +43,7 @@ public class LibraryController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle resources){
+        Category.init();
         ArrayList<Category> categorylist = Users.getCategoriesbyUser(State.getCurrentUser().getName());
         for(int i = 0; i < categorylist.size(); i++){
             VideoList liste = new VideoList(categorylist.get(i));
