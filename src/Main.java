@@ -10,7 +10,7 @@ import view.View;
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Homework Folder Manager");
+        primaryStage.setTitle("Video Player");
         primaryStage.setHeight(600);
         primaryStage.setWidth(800);
         Scene scene = new Scene(new Pane());

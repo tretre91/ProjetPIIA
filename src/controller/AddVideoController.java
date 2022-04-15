@@ -137,7 +137,7 @@ public class AddVideoController implements Initializable {
             if (proc.waitFor() == 0) {
                 return tmp;
             } else {
-                return null;
+                return new File(getClass().getResource("/resources/icons/baseline_movie_black_48dp.png").getPath());
             }
         } catch (IOException e) {
             System.err.println("Erreur lors du chargement de la miniature (" + e.getMessage() + ")");
