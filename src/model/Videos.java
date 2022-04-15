@@ -35,8 +35,9 @@ public abstract class Videos {
 
     private static PreparedStatement addAuthorizationStatement;
     private static PreparedStatement removeAuthorizationStatement;
-    private static PreparedStatement getAuthorizedVideos;
-    private static PreparedStatement getAuthorizedVideosT; // vidéos avec miniature
+    private static PreparedStatement getAuthorizedVideosStatement;
+    private static PreparedStatement getAuthorizedVideosTStatement; // vidéos avec miniature
+    private static PreparedStatement getAuthorizedUsersStatement;
 
     static {
         if (Database.isValid() || Database.open()) {
@@ -61,8 +62,9 @@ public abstract class Videos {
 
                 addAuthorizationStatement = Database.prepareStatement("INSERT INTO authorization VALUES (?, ?)");
                 removeAuthorizationStatement = Database.prepareStatement("DELETE FROM authorization WHERE idu = ? AND idv = ?");
-                getAuthorizedVideos = Database.prepareStatement("SELECT name, path FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
-                getAuthorizedVideosT = Database.prepareStatement("SELECT name, path, thumbnail FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
+                getAuthorizedVideosStatement = Database.prepareStatement("SELECT name, path FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
+                getAuthorizedVideosTStatement = Database.prepareStatement("SELECT name, path, thumbnail FROM video, authorization WHERE idu = ? AND authorization.idv = video.idv");
+                getAuthorizedUsersStatement = Database.prepareStatement("SELECT name, status FROM user, authorization WHERE idv = ? AND authorization.idu = user.idu");
 
                 Statement statement = Database.createStatement();
                 String addDefaultCategory = String.format(
@@ -353,8 +355,8 @@ public abstract class Videos {
             
             if (idu != null) {
                 ArrayList<Video> videos = new ArrayList<>();
-                getAuthorizedVideos.setInt(1, idu);
-                ResultSet rs = getAuthorizedVideos.executeQuery();
+                getAuthorizedVideosStatement.setInt(1, idu);
+                ResultSet rs = getAuthorizedVideosStatement.executeQuery();
                 while (rs.next()) {
                     videos.add(new Video(rs.getString(1), rs.getString(2), "Autres"));
                 }
@@ -372,12 +374,31 @@ public abstract class Videos {
             
             if (idu != null) {
                 ArrayList<Video> videos = new ArrayList<>();
-                getAuthorizedVideosT.setInt(1, idu);
-                ResultSet rs = getAuthorizedVideosT.executeQuery();
+                getAuthorizedVideosTStatement.setInt(1, idu);
+                ResultSet rs = getAuthorizedVideosTStatement.executeQuery();
                 while (rs.next()) {
                     videos.add(new Video(rs.getString(1), rs.getString(2), "Autres", new Image(rs.getBinaryStream(3))));
                 }
                 return videos;
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur de la base de données (" + e.getMessage() + ")");
+        }
+        return null;
+    }
+
+    public static ArrayList<User> getAuthorizedUsers(String videoName) {
+        try {
+            Integer idv = getVideoId(videoName);
+            
+            if (idv != null) {
+                ArrayList<User> users = new ArrayList<>();
+                getAuthorizedUsersStatement.setInt(1, idv);
+                ResultSet rs = getAuthorizedUsersStatement.executeQuery();
+                while (rs.next()) {
+                    users.add(new User(rs.getString(1), Status.fromInt(rs.getInt(2)), null));
+                }
+                return users;
             }
         } catch (SQLException e) {
             System.err.println("Erreur de la base de données (" + e.getMessage() + ")");

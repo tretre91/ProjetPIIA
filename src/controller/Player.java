@@ -1,33 +1,33 @@
 package controller;
 
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
-import java.util.ResourceBundle;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
-import javafx.scene.input.KeyCode;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Video;
 import view.View;
 
-public class Player implements Initializable{
+public class Player {
     @FXML
     private MediaView mediaView;
+    @FXML
+    private Text title;
     @FXML
     private Button playButton;
     @FXML
@@ -36,32 +36,70 @@ public class Player implements Initializable{
     private VBox overlay;
     @FXML
     private Slider volume;
+    @FXML
+    private ImageView pauseIcon;
+    @FXML
+    private ImageView playIcon;
+    @FXML
+    private ImageView enterFullscreenIcon;
+    @FXML
+    private ImageView exitFullscreenIcon;
 
     private boolean paused = true;
+    private boolean fullscreen = false;
+    private boolean dontExit = false;
     private boolean dragging = false;
     private MediaPlayer player;
     private Media media;
     private Scene scene;
+    private Stage stage;
 
     private Lock overlayLock = new ReentrantLock();
     private boolean overlayShown = false;
     private long overlayTimestamp = 0;
 
-    //constructeur
-    public Player(Media media, Scene scene) {
-        this.media = media;
-        this.scene = scene;
+    @FXML
+    private void initialize() throws IOException {
+        Video v = State.getCurrentVideo();
+        title.setText(v.name);
+        stage = State.getStage();
+        scene = stage.getScene();
 
+        media = new Media(new File(v.path).toURI().toURL().toString());
         player = new MediaPlayer(media);
-        player.setAutoPlay(true);
-    }
-
-    @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
         mediaView.setMediaPlayer(player);
-        //overlay.setVisible(false);
-        overlay.setVisible(true);
-        overlay.setOpacity(0);
+
+        exitFullscreenIcon.setVisible(false);
+        enterFullscreenIcon.setVisible(true);
+
+        player.setOnPaused(() -> {
+            pauseIcon.setVisible(false);
+            playIcon.setVisible(true);
+        });
+
+        player.setOnPlaying(() -> {
+            playIcon.setVisible(false);
+            pauseIcon.setVisible(true);
+        });
+
+        player.setOnEndOfMedia(() -> {
+            // TODO
+        });
+
+        stage.fullScreenProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue) {
+                enterFullscreenIcon.setVisible(false);
+                exitFullscreenIcon.setVisible(true);
+                dontExit = false;
+            } else {
+                exitFullscreenIcon.setVisible(false);
+                enterFullscreenIcon.setVisible(true);
+                dontExit = true;
+            }
+            fullscreen = newValue;
+        });
+
+        player.setAutoPlay(true);
         player.setOnReady(() -> setup());
     }
 
@@ -86,8 +124,8 @@ public class Player implements Initializable{
         });
 
         volume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(dragging){
-                player.setVolume(newValue.doubleValue()/100.);
+            if (dragging) {
+                player.setVolume(newValue.doubleValue() / 100.);
             }
         });
 
@@ -95,14 +133,14 @@ public class Player implements Initializable{
             while (true) {
                 overlayLock.lock();
                 try {
-                    if (overlayShown && Instant.now().toEpochMilli() - overlayTimestamp > 2000 && !dragging){
+                    if (overlayShown && Instant.now().toEpochMilli() - overlayTimestamp > 2000 && !dragging) {
                         overlayShown = false;
                         scene.setCursor(Cursor.NONE);
-                        //overlay.setVisible(false);
-                        overlay.setOpacity(0);
+                        overlay.setVisible(false);
+                        // overlay.setOpacity(0);
                     }
                 } finally {
-                overlayLock.unlock();
+                    overlayLock.unlock();
                 }
                 try {
                     Thread.sleep(100);
@@ -112,51 +150,58 @@ public class Player implements Initializable{
             }
         });
 
-        scene.setOnKeyPressed(eventManager);
-        overlay.setOnKeyPressed(eventManager);
+        scene.setOnMouseMoved(event -> {
+            showControls();
+        });
+
+        scene.setOnKeyPressed(event -> handleKeyEvent(event));
+
+        showControls();
 
         overlayHider.setDaemon(true);
         overlayHider.start();
     }
 
-    EventHandler<KeyEvent> eventManager = new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent e) {
-            System.out.println(e.getCode().toString());
-            overlayShown = true;
-            //overlay.setVisible(true);
-            overlay.setOpacity(1);
-            overlayTimestamp = Instant.now().toEpochMilli();
-            switch(e.getCode()){
-                case ESCAPE:
+    private void handleKeyEvent(KeyEvent e) {
+        System.out.println(e.getCode().toString());
+        showControls();
+        switch (e.getCode()) {
+            case ESCAPE:
+                if (!dontExit) {
                     exit();
-                    break;
-                case UP:
-                    volume.increment();
-                    player.setVolume(volume.getValue()/100.);
-                    System.out.println(volume.getValue());
-                    break;
-                case DOWN:
-                    volume.decrement();
-                    System.out.println(volume.getValue());
-                    player.setVolume(volume.getValue()/100.);
-                    break;
-                case SPACE:
-                    togglePlayback();
-                    break;
-                case RIGHT:
-                    slider.increment();
-                    player.seek(Duration.seconds(slider.getValue()));
+                }
+                dontExit = false;
                 break;
-                case LEFT:
-                    slider.decrement();
-                    player.seek(Duration.seconds(slider.getValue()));
+            case UP:
+                volume.increment();
+                player.setVolume(volume.getValue() / 100.);
+                System.out.println(volume.getValue());
                 break;
-                default:
-                break;                
-            }
+            case DOWN:
+                volume.decrement();
+                System.out.println(volume.getValue());
+                player.setVolume(volume.getValue() / 100.);
+                break;
+            case SPACE:
+            case K:
+                togglePlayback();
+                break;
+            case F:
+                toggleFullscreen();
+                dontExit = false;
+                break;
+            case RIGHT:
+                slider.increment();
+                player.seek(Duration.seconds(slider.getValue()));
+                break;
+            case LEFT:
+                slider.decrement();
+                player.seek(Duration.seconds(slider.getValue()));
+                break;
+            default:
+                break;
         }
-    };
+    }
 
     @FXML
     private void togglePlayback() {
@@ -166,6 +211,12 @@ public class Player implements Initializable{
             player.pause();
         }
         paused = !paused;
+    }
+
+    @FXML
+    private void toggleFullscreen() {
+        fullscreen = !fullscreen;
+        stage.setFullScreen(fullscreen);
     }
 
     //bouger le curseur temporel
@@ -191,8 +242,8 @@ public class Player implements Initializable{
         overlayLock.lock();
         try {
             scene.setCursor(Cursor.DEFAULT);
-            //overlay.setVisible(true);
-            overlay.setOpacity(1);
+            overlay.setVisible(true);
+            // overlay.setOpacity(1);
             overlayShown = true;
             overlayTimestamp = Instant.now().toEpochMilli();
         } finally {
@@ -200,14 +251,12 @@ public class Player implements Initializable{
         }
     }
 
-    //méthode appelé quand on appuie sur escape
-    private void exit(){
+    //méthode appelée quand on appuie sur escape
+    @FXML
+    private void exit() {
+        stage.setFullScreen(false);
         player.stop();
-        Scene scene = new Scene(new Pane());
-        scene.getStylesheets().add("/resources/css/categoryTile.css");
-        State.getStage().setScene(scene);
-        State.getStage().setTitle("Homework Folder Manager");
-        View.setScene(scene);
-        View.switchPage(view.Page.LIBRARY);
+        scene.setCursor(Cursor.DEFAULT);
+        View.switchPage(View.popPage());
     }
 }
