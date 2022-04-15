@@ -169,6 +169,10 @@ public class AddVideoController implements Initializable {
         task.setOnSucceeded(event -> {
             if (task.getValue()) {
                 importLabel.setText("Import réussi !");
+                category.setText("");
+                fileName.setText("");
+                newName.setText("");
+                selectedFile = null;
             } else {
                 importLabel.setText("Echec de l'import");
                 importProgress.setVisible(false);

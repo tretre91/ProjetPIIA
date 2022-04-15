@@ -14,10 +14,9 @@
 <?import javafx.scene.text.Font?>
 <?import org.tretre91.controls.ErrorTextField?>
 
-
 <VBox prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddVideoController">
    <children>
-      <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@../css/iconButton.css">
+      <Button cancelButton="true" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@../css/iconButton.css">
          <graphic>
             <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                <image>
@@ -53,7 +52,7 @@
             <TextField fx:id="category" promptText="Catégorie" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="TOP" />
             <Button fx:id="addButton" defaultButton="true" mnemonicParsing="false" onAction="#tryAjouter" text="Ajouter" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
             <ErrorTextField fx:id="newName" promptText="Nom" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-            <Button fx:id="debug" mnemonicParsing="false" onAction="#printBD" text="Debug" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Button fx:id="debug" disable="true" focusTraversable="false" mnemonicParsing="false" onAction="#printBD" text="Debug" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
             <Label fx:id="importLabel" alignment="CENTER" maxWidth="1.7976931348623157E308" text="Import en cours ..." GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <ProgressBar fx:id="importProgress" prefWidth="200.0" progress="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="TOP" />
          </children>

@@ -10,10 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ManageCategoriesController">
    <children>
-      <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@../css/iconButton.css">
+      <Button cancelButton="true" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#goBack" stylesheets="@../css/iconButton.css">
          <graphic>
             <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                <image>
