@@ -130,8 +130,8 @@ public class AddVideoController implements Initializable {
     private File getThumbnail(String path) {
         try {
             File tmp = File.createTempFile("hfm", ".jpeg");
-            String command = "ffmpeg -y -loglevel quiet -i " + path
-                    + " -ss 00:00:01  -vf scale=w=150:h=100:force_original_aspect_ratio=decrease,pad=150:100:-1:-1:color=black -frames:v 1 "
+            String command = "ffmpeg -y -loglevel quiet -i \"" + path
+                    + "\" -ss 00:00:01  -vf scale=w=150:h=100:force_original_aspect_ratio=decrease,pad=150:100:-1:-1:color=black -frames:v 1 "
                     + tmp.getAbsolutePath();
             Process proc = Runtime.getRuntime().exec(command);
             if (proc.waitFor() == 0) {
