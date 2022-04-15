@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import model.Category;
 import model.Videos;
+import view.Page;
 import view.View;
 
 public class EditVideoController {

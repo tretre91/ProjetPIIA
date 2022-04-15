@@ -21,16 +21,6 @@ public class ManageFilesController {
     }
 
     @FXML
-    public void goToRemoveVideo(){
-        System.out.println("Remove");
-    }
-
-    @FXML
-    public void goToExplore(){
-        System.out.println("Explore");
-    }
-
-    @FXML
     public void goToManageCat(){
         View.switchPage(Page.MANAGE_CATEGORIES);
     }

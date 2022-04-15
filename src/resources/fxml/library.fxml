@@ -36,6 +36,6 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button mnemonicParsing="false" onAction="#debugBD" prefHeight="28.0" prefWidth="70.0" text="Debug" />
+      <Button disable="true" focusTraversable="false" mnemonicParsing="false" onAction="#debugBD" prefHeight="28.0" prefWidth="70.0" text="Debug" visible="false" />
    </children>
 </VBox>
