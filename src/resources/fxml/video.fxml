@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.image.Image?>
@@ -18,13 +17,13 @@
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseMoved="#showControls" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Player">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
+      <VBox onMouseClicked="#togglePlayback" prefHeight="200.0" prefWidth="100.0" StackPane.alignment="CENTER">
          <children>
             <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000000;" VBox.vgrow="ALWAYS" />
             <HBox prefHeight="1.0" prefWidth="1.0" VBox.vgrow="SOMETIMES">
                <children>
                   <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000000;" HBox.hgrow="SOMETIMES" />
-                  <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" onMouseClicked="#togglePlayback" HBox.hgrow="ALWAYS" />
+                  <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" HBox.hgrow="ALWAYS" />
                   <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #000000;" HBox.hgrow="SOMETIMES" />
                </children>
             </HBox>
@@ -43,7 +42,7 @@
                   <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#exit" stylesheets="@../css/iconButton.css">
+                  <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" mnemonicParsing="false" onAction="#exit" stylesheets="@../css/iconButton.css">
                      <graphic>
                         <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                            <image>
@@ -71,10 +70,11 @@
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#togglePlayback" stylesheets="@../css/iconButton.css" GridPane.rowIndex="1">
+                        <Button fx:id="playButton" focusTraversable="false" mnemonicParsing="false" onMouseClicked="#togglePlayback" stylesheets="@../css/iconButton.css" GridPane.rowIndex="2">
                            <graphic>
                               <StackPane prefHeight="48.0" prefWidth="48.0">
                                  <children>
@@ -92,13 +92,9 @@
                               </StackPane>
                            </graphic>
                         </Button>
-                        <Slider fx:id="volume" blockIncrement="5.0" focusTraversable="false" onMousePressed="#startDrag" onMouseReleased="#endDrag" orientation="VERTICAL" value="75.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowSpan="2">
-                           <padding>
-                              <Insets bottom="6.0" />
-                           </padding>
-                        </Slider>
-                        <Slider fx:id="slider" focusTraversable="false" onMouseClicked="#seek" onMousePressed="#startDrag" onMouseReleased="#endDrag" prefHeight="16.0" prefWidth="455.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#toggleFullscreen" onMouseClicked="#togglePlayback" stylesheets="@../css/iconButton.css" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                        <Slider fx:id="volume" blockIncrement="5.0" focusTraversable="false" onMousePressed="#startDrag" onMouseReleased="#endDrag" orientation="VERTICAL" value="75.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+                        <Slider fx:id="slider" focusTraversable="false" onMouseClicked="#seek" onMousePressed="#startDrag" onMouseReleased="#endDrag" prefHeight="16.0" prefWidth="455.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#toggleFullscreen" onMouseClicked="#togglePlayback" stylesheets="@../css/iconButton.css" GridPane.columnIndex="3" GridPane.rowIndex="2">
                            <graphic>
                               <StackPane prefHeight="48.0" prefWidth="48.0">
                                  <children>
@@ -110,6 +106,29 @@
                                     <ImageView fx:id="exitFullscreenIcon" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../icons/baseline_fullscreen_exit_white_48dp.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </StackPane>
+                           </graphic>
+                        </Button>
+                        <Button focusTraversable="false" mnemonicParsing="false" onAction="#toggleMute" onMouseClicked="#togglePlayback" stylesheets="@../css/iconButton.css" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                           <graphic>
+                              <StackPane prefHeight="48.0" prefWidth="48.0">
+                                 <children>
+                                    <ImageView fx:id="volumeOffIcon" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/baseline_volume_off_white_48dp.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="volumeMediumIcon" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/baseline_volume_down_white_48dp.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fx:id="volumeFullIcon" fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../icons/baseline_volume_up_white_48dp.png" />
                                        </image>
                                     </ImageView>
                                  </children>

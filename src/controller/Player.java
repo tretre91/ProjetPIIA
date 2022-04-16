@@ -6,6 +6,7 @@ import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
@@ -45,7 +46,14 @@ public class Player {
     @FXML
     private ImageView exitFullscreenIcon;
 
+    @FXML private ImageView volumeOffIcon, volumeMediumIcon, volumeFullIcon;
+    ImageView lastIcon;
+
+    private EventHandler<KeyEvent> keyHandler = event -> handleKeyEvent(event);
+
     private boolean paused = true;
+    private boolean muted = false;
+    private double lastVolume = 0.0;
     private boolean fullscreen = false;
     private boolean dontExit = false;
     private boolean dragging = false;
@@ -99,6 +107,12 @@ public class Player {
             fullscreen = newValue;
         });
 
+        volumeFullIcon.setVisible(true);
+        volumeMediumIcon.setVisible(false);
+        volumeOffIcon.setVisible(false);
+
+        lastIcon = volumeFullIcon;
+
         player.setAutoPlay(true);
         player.setOnReady(() -> setup());
     }
@@ -124,9 +138,21 @@ public class Player {
         });
 
         volume.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (dragging) {
-                player.setVolume(newValue.doubleValue() / 100.);
-            }
+                if (newValue.doubleValue() == volume.getMin()) {
+                    lastIcon.setVisible(false);
+                    volumeOffIcon.setVisible(true);
+                    lastIcon = volumeOffIcon;
+                } else if (newValue.doubleValue() < 50 && oldValue.doubleValue() != 0 && oldValue.doubleValue() < 50) {
+                    lastIcon.setVisible(false);
+                    volumeMediumIcon.setVisible(true);
+                    lastIcon = volumeMediumIcon;
+                } else if (newValue.doubleValue() >= 50 && oldValue.doubleValue() < 50) {
+                    lastIcon.setVisible(false);
+                    volumeFullIcon.setVisible(true);
+                    lastIcon = volumeFullIcon;
+                }
+                lastVolume = newValue.doubleValue();
+                player.setVolume(lastVolume / 100.);
         });
 
         Thread overlayHider = new Thread(() -> {
@@ -154,7 +180,8 @@ public class Player {
             showControls();
         });
 
-        scene.setOnKeyPressed(event -> handleKeyEvent(event));
+
+        scene.setOnKeyPressed(keyHandler);
 
         showControls();
 
@@ -190,6 +217,9 @@ public class Player {
                 toggleFullscreen();
                 dontExit = false;
                 break;
+            case M:
+                toggleMute();
+                break;
             case RIGHT:
                 slider.increment();
                 player.seek(Duration.seconds(slider.getValue()));
@@ -217,6 +247,19 @@ public class Player {
     private void toggleFullscreen() {
         fullscreen = !fullscreen;
         stage.setFullScreen(fullscreen);
+    }
+
+    @FXML
+    private void toggleMute() {
+        System.out.println(volume.getValue());
+        if (muted) {
+            volume.setValue(lastVolume);
+            muted = false;
+        } else {
+            lastVolume = volume.getValue();
+            volume.setValue(volume.getMin());
+            muted = true;
+        }
     }
 
     //bouger le curseur temporel
@@ -256,6 +299,7 @@ public class Player {
     private void exit() {
         stage.setFullScreen(false);
         player.stop();
+        scene.setOnKeyPressed(null);
         scene.setCursor(Cursor.DEFAULT);
         View.switchPage(View.popPage());
     }
