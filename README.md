@@ -1,8 +1,15 @@
 # Projet PIIA
 
+## Attributions
+
+Ce projet a été développé par Brice POINTAL et Trévis MORVANY dans le cadre du cours de Programmation des Interfaces Interactives Avancées du L3 informatique de l'université Paris-Sacaly. Il est distribué sous les termes de la licence MIT (voir [LICENCE](./LICENCE)), sauf pour les parties suivantes qui sont sujetes à leurs propres licences :
+
+- Les icônes du dossier `src/resources/icons` provennant de [Google fonts](https://fonts.google.com/icons) (licence Apache 2.0)
+- [sqlite-jdbc](https://github.com/xerial/sqlite-jdbc), la bibiliothèque utilisée pour les bases de données (dossier `lib`, licence Apache 2.0)
+
 ## Build
 
-Les bibliothèques nécessaires pour exécuter le projet sont [JavaFX](https://openjfx.io/) et [sqlite-jdbc](https://github.com/xerial/sqlite-jdbc).
+Les bibliothèques nécessaires pour exécuter le projet sont [JavaFX](https://openjfx.io/) et [sqlite-jdbc](https://github.com/xerial/sqlite-jdbc). Le support du chargement des miniatures requiert également d'avoir [ffmpeg](https://ffmpeg.org/) installé est accessible depuis le PATH.
 
 ## Structure du code
 
